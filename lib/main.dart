@@ -1,15 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:gmd_project/model/navigation_model.dart';
-import 'package:gmd_project/model/plant_model.dart';
+import 'package:gmd_project/homepage.dart';
+import 'package:gmd_project/userpage.dart';
 
-void main() => runApp(GMDApp());
+final GlobalKey<NavigatorState> navKey = GlobalKey();
+void main() => runApp(MaterialApp(home: GMDApp()));
 
 class GMDApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'GrowMyData App',
-      home: GMDFrame(),
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0.0,
+        backgroundColor: Color(0xFF007F0E),
+        title: Center(
+          child: Text("GrowMyData")
+        ),
+      ),
+      body: Stack(
+        children: <Widget> [
+          Navigator(
+            key: navKey,
+            onGenerateRoute: (settings) {
+              switch (settings.name) {
+                case 'page1':
+                  return PageRouteBuilder(
+                    pageBuilder: (context, animation1, animation2) => Userpage(),
+                    transitionDuration: Duration(seconds: 0),
+                  );
+                default:
+                  return PageRouteBuilder(
+                    pageBuilder: (context, animation1, animation2) => Homepage(),
+                    transitionDuration: Duration(seconds: 0),
+                  );
+              }
+            }
+          ),
+          NavigationDrawer()
+        ]
+      )
     );
   }
 }
@@ -92,9 +121,13 @@ class _NavigationDrawerState extends State<NavigationDrawer> with SingleTickerPr
                 return CollapsingListTile(
                   isSelected: selectedIndex == counter,
                   onTap: () {
-                    setState(() {
-                      selectedIndex = counter;
-                    });
+                    if (selectedIndex != counter) {
+                      setState(() {
+                        selectedIndex = counter;
+                      });
+                      navKey.currentState.popUntil(ModalRoute.withName('/'));
+                      navKey.currentState.pushNamed('page'+selectedIndex.toString());
+                    }
                   },
                   title: navItems[counter].title,
                   icon: navItems[counter].icon,
@@ -147,162 +180,6 @@ class _CollapsingListTileState extends State<CollapsingListTile> {
           ],
         )
       )
-    );
-  }
-}
-
-class Homepage extends StatefulWidget {
-  @override
-  _HomepageState createState() => _HomepageState();
-}
-
-class _HomepageState extends State<Homepage> {
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      padding: EdgeInsets.only(left: 56.0),
-      itemBuilder: (context, counter) {
-        return HomePlantView(
-          id: plantProbes[counter].id,
-          name: plantProbes[counter].name,
-          readings: plantProbes[counter].readings,
-        );
-      },
-      itemCount: plantProbes.length,
-    );
-  }
-}
-
-class HomePlantView extends StatefulWidget {
-  final String id;
-  final String name;
-  final List<PlantReading> readings;
-  HomePlantView({this.id, this.name, this.readings});
-  @override
-  _HomePlantViewState createState() => _HomePlantViewState();
-}
-
-class _HomePlantViewState extends State<HomePlantView> {
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: <Widget> [
-        Container(
-          decoration: BoxDecoration(
-            color: Color(0xFFE5E5E5),
-            border: Border.all(
-              color: Color(0xFF969696),
-              width: 2.0,
-            )
-          ),
-          margin: EdgeInsets.all(8.0),
-          width: 125,
-          height: 125,
-          child: Center(child: Text(widget.name)),
-        ),
-        Expanded(
-          child: Container(
-            decoration: BoxDecoration(
-              color: Color(0xFFE5E5E5),
-              border: Border.all(
-                color: Color(0xFF969696),
-                width: 2.0,
-              )
-            ),
-            margin: EdgeInsets.all(8.0),
-            width: 125,
-            height: 125,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget> [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Color(0xFFE5E5E5),
-                      border: Border(
-                        bottom: BorderSide(
-                          color: Color(0xFF969696),
-                          width: 2.0,
-                        )
-                      )
-                    ),
-                    child: Row(
-                      children: <Widget> [
-                        Icon(
-                          Icons.wb_sunny_outlined,
-                          color: Colors.black,
-                        ),
-                        Expanded(child: Align(child: Text(widget.readings.last.light.toString()), alignment: Alignment.centerRight)),
-                      ]
-                    )
-                  )
-                ),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Color(0xFFE5E5E5),
-                      border: Border(
-                        bottom: BorderSide(
-                          color: Color(0xFF969696),
-                          width: 2.0,
-                        )
-                      )
-                    ),
-                    child: Row(
-                      children: <Widget> [
-                        Icon(
-                          Icons.opacity,
-                          color: Colors.black,
-                        ),
-                        Expanded(child: Align(child: Text(widget.readings.last.moisture.toString()), alignment: Alignment.centerRight)),
-                      ]
-                    )
-                  )
-                ),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Color(0xFFE5E5E5),
-                      border: Border(
-                        bottom: BorderSide(
-                          color: Color(0xFF969696),
-                          width: 2.0,
-                        )
-                      )
-                    ),
-                    child: Row(
-                      children: <Widget> [
-                        Icon(
-                          Icons.wb_cloudy_outlined,
-                          color: Colors.black,
-                        ),
-                        Expanded(child: Align(child: Text(widget.readings.last.humidity.toString()), alignment: Alignment.centerRight)),
-                      ]
-                    )
-                  )
-                ),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Container(
-                    child: Row(
-                      children: <Widget> [
-                        Icon(
-                          Icons.thermostat_rounded,
-                          color: Colors.black,
-                        ),
-                        Expanded(child: Align(child: Text(widget.readings.last.temperature.toString()), alignment: Alignment.centerRight)),
-                      ]
-                    )
-                  )
-                ),
-              ]
-            )
-          )
-        )
-      ] 
     );
   }
 }
