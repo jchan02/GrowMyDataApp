@@ -1,24 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:gmd_project/model/plant_model.dart';
 
-class Homepage extends StatefulWidget {
-  @override
-  _HomepageState createState() => _HomepageState();
-}
-
-class _HomepageState extends State<Homepage> {
+class Homepage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      padding: EdgeInsets.only(left: 56.0),
-      itemBuilder: (context, counter) {
-        return HomePlantView(
-          id: plantProbes[counter].id,
-          name: plantProbes[counter].name,
-          readings: plantProbes[counter].readings,
-        );
-      },
-      itemCount: plantProbes.length,
+    return Scrollbar(
+      thickness: 3.0,
+      child: ListView.builder(
+        padding: EdgeInsets.only(left: 56.0),
+        itemBuilder: (context, counter) {
+          return HomePlantView(
+            id: plantProbes[counter].id,
+            name: plantProbes[counter].name,
+            readings: plantProbes[counter].readings,
+          );
+        },
+        itemCount: plantProbes.length,
+      )
     );
   }
 }
@@ -63,7 +61,6 @@ class _HomePlantViewState extends State<HomePlantView> {
             width: 125,
             height: 125,
             child: Column(
-              
               children: <Widget> [
                 Align(
                   alignment: Alignment.centerLeft,

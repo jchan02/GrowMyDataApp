@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:gmd_project/model/navigation_model.dart';
 import 'package:gmd_project/homepage.dart';
 import 'package:gmd_project/userpage.dart';
+import 'package:gmd_project/plantpage.dart';
 
-final GlobalKey<NavigatorState> navKey = GlobalKey();
+GlobalKey<NavigatorState> navKey = GlobalKey();
 void main() => runApp(MaterialApp(home: GMDApp()));
 
 class GMDApp extends StatelessWidget {
@@ -26,6 +27,11 @@ class GMDApp extends StatelessWidget {
                 case 'page1':
                   return PageRouteBuilder(
                     pageBuilder: (context, animation1, animation2) => Userpage(),
+                    transitionDuration: Duration(seconds: 0),
+                  );
+                case 'page2':
+                  return PageRouteBuilder(
+                    pageBuilder: (context, animation1, animation2) => Plantpage(),
                     transitionDuration: Duration(seconds: 0),
                   );
                 default:

@@ -28,7 +28,7 @@ List<PlantModel> plantProbes = [
     name: "Test Plant 1",
     readings: [
     PlantReading(
-      time: "0", light: 20.0, lightQuality: 0.3, moisture: 16.7, moistureQuality: 0.2,
+      time: "2 Days Ago", light: 20.0, lightQuality: 0.3, moisture: 16.7, moistureQuality: 0.2,
       humidity: 56.3, humidityQuality: 0.8, temperature: 75, temperatureQuality: 0.97
       )
     ]
@@ -38,7 +38,37 @@ List<PlantModel> plantProbes = [
     name: "Test Plant 2",
     readings: [
       PlantReading(
-        time: "1", light: 35.0, lightQuality: 0.48, moisture: 78.2, moistureQuality: 0.623,
+        time: "1:00 AM", light: 35.0, lightQuality: 0.48, moisture: 78.2, moistureQuality: 0.623,
+        humidity: 11.111111, humidityQuality: 0.143, temperature: 55, temperatureQuality: 0.79
+      )
+    ]
+  ),
+   PlantModel(
+    id: "3",
+    name: "Test Plant 3",
+    readings: [
+      PlantReading(
+        time: "2:35 PM", light: 35.0, lightQuality: 0.48, moisture: 78.2, moistureQuality: 0.623,
+        humidity: 11.111111, humidityQuality: 0.143, temperature: 55, temperatureQuality: 0.79
+      )
+    ]
+  ),
+   PlantModel(
+    id: "4",
+    name: "Test Plant 4",
+    readings: [
+      PlantReading(
+        time: "6:09 AM", light: 35.0, lightQuality: 0.48, moisture: 78.2, moistureQuality: 0.623,
+        humidity: 11.111111, humidityQuality: 0.143, temperature: 55, temperatureQuality: 0.79
+      )
+    ]
+  ),
+   PlantModel(
+    id: "5",
+    name: "Test Plant 5",
+    readings: [
+      PlantReading(
+        time: "12:00 AM", light: 35.0, lightQuality: 0.48, moisture: 78.2, moistureQuality: 0.623,
         humidity: 11.111111, humidityQuality: 0.143, temperature: 55, temperatureQuality: 0.79
       )
     ]
