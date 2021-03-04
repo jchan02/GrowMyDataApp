@@ -1,9 +1,10 @@
 class PlantModel {
   String id;
   String name;
+  bool favorite;
   List<PlantReading> readings;
 
-  PlantModel({this.id, this.name, this.readings});
+  PlantModel({this.id, this.name, this.favorite, this.readings});
 }
 
 class PlantReading {
@@ -26,6 +27,7 @@ List<PlantModel> plantProbes = [
   PlantModel(
     id: "1",
     name: "Test Plant 1",
+    favorite: true,
     readings: [
     PlantReading(
       time: "2 Days Ago", light: 20.0, lightQuality: 0.3, moisture: 16.7, moistureQuality: 0.2,
@@ -36,6 +38,7 @@ List<PlantModel> plantProbes = [
   PlantModel(
     id: "2",
     name: "Test Plant 2",
+    favorite: false,
     readings: [
       PlantReading(
         time: "1:00 AM", light: 35.0, lightQuality: 0.48, moisture: 78.2, moistureQuality: 0.623,
@@ -46,6 +49,7 @@ List<PlantModel> plantProbes = [
    PlantModel(
     id: "3",
     name: "Test Plant 3",
+    favorite: false,
     readings: [
       PlantReading(
         time: "2:35 PM", light: 35.0, lightQuality: 0.48, moisture: 78.2, moistureQuality: 0.623,
@@ -56,6 +60,7 @@ List<PlantModel> plantProbes = [
    PlantModel(
     id: "4",
     name: "Test Plant 4",
+    favorite: false,
     readings: [
       PlantReading(
         time: "6:09 AM", light: 35.0, lightQuality: 0.48, moisture: 78.2, moistureQuality: 0.623,
@@ -66,6 +71,7 @@ List<PlantModel> plantProbes = [
    PlantModel(
     id: "5",
     name: "Test Plant 5",
+    favorite: false,
     readings: [
       PlantReading(
         time: "12:00 AM", light: 35.0, lightQuality: 0.48, moisture: 78.2, moistureQuality: 0.623,

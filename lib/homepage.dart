@@ -12,6 +12,7 @@ class Homepage extends StatelessWidget {
           return HomePlantView(
             id: plantProbes[counter].id,
             name: plantProbes[counter].name,
+            favorite: plantProbes[counter].favorite,
             readings: plantProbes[counter].readings,
           );
         },
@@ -24,8 +25,9 @@ class Homepage extends StatelessWidget {
 class HomePlantView extends StatefulWidget {
   final String id;
   final String name;
+  final bool favorite;
   final List<PlantReading> readings;
-  HomePlantView({this.id, this.name, this.readings});
+  HomePlantView({this.id, this.name, this.favorite, this.readings});
   @override
   _HomePlantViewState createState() => _HomePlantViewState();
 }
@@ -35,18 +37,83 @@ class _HomePlantViewState extends State<HomePlantView> {
   Widget build(BuildContext context) {
     return Row(
       children: <Widget> [
-        Container(
-          decoration: BoxDecoration(
-            color: Color(0xFFE5E5E5),
-            border: Border.all(
-              color: Color(0xFF969696),
-              width: 2.0,
+        Column(
+          children: <Widget> [
+            Stack(
+              children: <Widget> [
+                Container(
+                  decoration: BoxDecoration(
+                    color: Color(0xFFE5E5E5),
+                    border: Border.all(
+                    color: Color(0xFF969696),
+                    width: 2.0,
+                   )
+                  ),
+                  margin: EdgeInsets.only(right: 8.0, left: 8.0),
+                  width: 125,
+                  height: 100,
+                  child: Center(child: Icon(Icons.image_not_supported, color: Color(0xFFBFBFBF), size: 90.0)),
+                ),
+                Container(
+                  margin: EdgeInsets.only(right: 9.0, left: 9.0, top: 1.0),
+                  width: 23,
+                  height: 12,
+                  child: Icon(Icons.star, color: Color(0xFF969696), size: 25.0)
+                ),
+                if(widget.favorite == true) Container(
+                  margin: EdgeInsets.only(right: 9.0, left: 10.0, top: 4.0),
+                  width: 23,
+                  height: 12,
+                  child: Icon(Icons.star, color: Colors.yellow, size: 19.0)
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    border: Border.all(
+                    color: Color(0xFF969696),
+                    width: 1.0,
+                   )
+                  ),
+                  margin: EdgeInsets.only(right: 9.0, left: 120, top: 1.0),
+                  width: 12,
+                  height: 23,
+                  child: Column(
+                    children: <Widget> [
+                      Icon(Icons.battery_full, color: Colors.green, size: 10.0),
+                      Icon(Icons.wifi, color: Colors.green, size: 10.0)
+                    ]
+                  ),
+                ),
+              ]
+            ),
+            Container(
+              alignment: Alignment.bottomCenter,
+              width: 125,
+              height: 25,
+              child: Container(
+                decoration: BoxDecoration(
+                color: Color(0xFFE5E5E5),
+                border: Border(
+                  bottom: BorderSide(color: Color(0xFF969696), width: 2.0),
+                  left: BorderSide(color: Color(0xFF969696), width: 2.0),
+                  right: BorderSide(color: Color(0xFF969696), width: 2.0),
+                )
+              ),
+              child: Row(
+                children: <Widget> [
+                  Icon(Icons.photo_camera, color: Color(0xFF969696)),
+                  Expanded(child: Text(
+                    widget.name,
+                    style: TextStyle(fontSize:11),
+                    overflow: TextOverflow.ellipsis
+                    )
+                  ),
+                  Icon(Icons.edit, color: Color(0xFF969696))
+                ]
+              )
+              )
             )
-          ),
-          margin: EdgeInsets.all(8.0),
-          width: 125,
-          height: 125,
-          child: Center(child: Text(widget.name)),
+          ]
         ),
         Expanded(
           child: Container(
@@ -83,7 +150,12 @@ class _HomePlantViewState extends State<HomePlantView> {
                           Icons.wb_sunny_outlined,
                           color: Colors.black,
                         ),
-                        Expanded(child: Align(child: Text(widget.readings.last.light.toString()), alignment: Alignment.centerRight)),
+                        Expanded(
+                          child: Align(
+                            child: Text(widget.readings.last.light.toStringAsFixed(2) + ' lm'),
+                            alignment: Alignment.centerRight
+                          )
+                        ),
                       ]
                     )
                   )
@@ -109,8 +181,13 @@ class _HomePlantViewState extends State<HomePlantView> {
                           Icons.opacity,
                           color: Colors.black,
                         ),
-                        Expanded(child: Align(child: Text(widget.readings.last.moisture.toString()), alignment: Alignment.centerRight)),
-                      ]
+                        Expanded(
+                          child: Align(
+                            child: Text(widget.readings.last.moisture.toStringAsFixed(2)),
+                            alignment: Alignment.centerRight
+                          ),
+                        ),
+                      ],
                     )
                   )
                 ),
@@ -135,7 +212,12 @@ class _HomePlantViewState extends State<HomePlantView> {
                           Icons.wb_cloudy_outlined,
                           color: Colors.black,
                         ),
-                        Expanded(child: Align(child: Text(widget.readings.last.humidity.toString()), alignment: Alignment.centerRight)),
+                        Expanded(
+                          child: Align(
+                            child: Text(widget.readings.last.humidity.toStringAsFixed(2) + ' %'),
+                            alignment: Alignment.centerRight
+                          )
+                        ),
                       ]
                     )
                   )
@@ -155,7 +237,12 @@ class _HomePlantViewState extends State<HomePlantView> {
                           Icons.thermostat_rounded,
                           color: Colors.black,
                         ),
-                        Expanded(child: Align(child: Text(widget.readings.last.temperature.toString()), alignment: Alignment.centerRight)),
+                        Expanded(
+                          child: Align(
+                            child: Text(widget.readings.last.temperature.toStringAsFixed(2) + ' °F'),
+                            alignment: Alignment.centerRight
+                          )
+                        ),
                       ]
                     )
                   )
