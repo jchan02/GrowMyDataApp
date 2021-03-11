@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gmd_project/model/plant_model.dart';
+import 'package:gmd_project/model/globals.dart' as globals;
 
 class Homepage extends StatelessWidget {
   @override
@@ -239,7 +240,10 @@ class _HomePlantViewState extends State<HomePlantView> {
                         ),
                         Expanded(
                           child: Align(
-                            child: Text(widget.readings.last.temperature.toStringAsFixed(2) + ' °F'),
+                            child: Text(
+                              globals.tempUseF ? widget.readings.last.temperature.toStringAsFixed(2) + ' °F'  
+                              : ((widget.readings.last.temperature - 32) * (5/9)).toStringAsFixed(2) + ' °C'
+                              ),
                             alignment: Alignment.centerRight
                           )
                         ),
