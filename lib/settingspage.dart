@@ -28,17 +28,22 @@ class _SettingspageState extends State<Settingspage> {
         tiles: [
           Column(
             children: <Widget> [
-              Text('Delay between plant readings'),
-              Text('(applies after next reading)'),
-              DropdownButton(
-                value: selectedRate,
-                items: rateMenuItems,
-                onChanged: (RateMenuItem selectedItem) {
-                  setState(() {
-                    selectedRate = selectedItem;
-                    globals.readRate = selectedItem.rateMinutes;
-                  });
-                }
+              Text('Delay between plant readings', style: TextStyle(color: Theme.of(context).hintColor)),
+              Text('(applies after next reading)', style: TextStyle(color: Theme.of(context).hintColor)),
+              Container(
+                color: Colors.white,
+                height: 40,
+                child: DropdownButton(
+                  dropdownColor: Colors.white,
+                  value: selectedRate,
+                  items: rateMenuItems,
+                  onChanged: (RateMenuItem selectedItem) {
+                    setState(() {
+                      selectedRate = selectedItem;
+                      globals.readRate = selectedItem.rateMinutes;
+                    });
+                  }
+                ),
               ),
               SizedBox(height: 16),
             ],
@@ -47,18 +52,18 @@ class _SettingspageState extends State<Settingspage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget> [
               SizedBox(height: 16),
-              Text('Units for temperature measurement'),
+              Text('Units for temperature measurement', style: TextStyle(color: Theme.of(context).hintColor)),
               Center(
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text('°C'),
+                    Text('°C', style: TextStyle(color: Theme.of(context).hintColor)),
                     Switch(
                       value: tempUseF,
-                      activeColor: Color(0xFF007F0E),
-                      activeTrackColor: Colors.green[100],
-                      inactiveThumbColor: Color(0xFF007F0E),
-                      inactiveTrackColor: Colors.green[100],
+                      activeColor: Theme.of(context).primaryColor,
+                      activeTrackColor: Theme.of(context).accentColor,
+                      inactiveThumbColor: Theme.of(context).primaryColor,
+                      inactiveTrackColor: Theme.of(context).accentColor,
                       onChanged: (value) {
                         setState(() {
                           tempUseF = !tempUseF;
@@ -66,7 +71,7 @@ class _SettingspageState extends State<Settingspage> {
                         });
                       },
                     ),
-                    Text('°F')
+                    Text('°F', style: TextStyle(color: Theme.of(context).hintColor))
                   ]
                 )
               ),
@@ -76,11 +81,11 @@ class _SettingspageState extends State<Settingspage> {
           Column(
             children: <Widget> [
               SizedBox(height: 16),
-              Text('Enable push notifications'),
+              Text('Enable push notifications', style: TextStyle(color: Theme.of(context).hintColor)),
               Switch(
                 value: notifEnable,
-                activeColor: Color(0xFF007F0E),
-                activeTrackColor: Colors.green[100],
+                activeColor: Theme.of(context).primaryColor,
+                activeTrackColor: Theme.of(context).accentColor,
                 onChanged: (value) {
                   setState(() {
                     notifEnable = !notifEnable;
@@ -88,14 +93,14 @@ class _SettingspageState extends State<Settingspage> {
                 },
               ),
               SizedBox(height: 16),
-              Text('Reading quality level to trigger notification'),
+              Text('Reading quality level to trigger notification', style: TextStyle(color: Theme.of(context).hintColor)),
               Slider(
                 value: notifThreshold,
                 min: 0,
                 max: 100,
                 divisions: 20,
-                activeColor: Color(0xFF007F0E),
-                inactiveColor: Colors.green[100],
+                activeColor: Theme.of(context).primaryColor,
+                inactiveColor: Theme.of(context).accentColor,
                 label: notifThreshold.round().toString(),
                 onChanged: (double value) {
                   setState (() {
@@ -110,15 +115,16 @@ class _SettingspageState extends State<Settingspage> {
           Column(
             children: <Widget> [
               SizedBox(height: 16),
-              Text('Enable dark mode'),
+              Text('Enable dark mode', style: TextStyle(color: Theme.of(context).hintColor)),
               Switch(
                 value: darkMode,
-                activeColor: Color(0xFF007F0E),
-                activeTrackColor: Colors.green[100],
+                activeColor: Theme.of(context).primaryColor,
+                activeTrackColor: Theme.of(context).accentColor,
                 onChanged: (value) {
                   setState(() {
                     darkMode = !darkMode;
                     globals.darkMode = darkMode;
+                    globals.themeNotif.switchTheme();
                   });
                 },
               ),
@@ -130,12 +136,12 @@ class _SettingspageState extends State<Settingspage> {
               SizedBox(height: 16),
               ElevatedButton(
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF007F0E))
+                  backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).primaryColor)
                 ),
                 onPressed: () {
 
                 },
-                child: Text('Request Readings File')
+                child: Text('Request Readings File', style: TextStyle(color: Theme.of(context).hintColor))
               ),
               SizedBox(height: 16),
             ]
@@ -145,12 +151,12 @@ class _SettingspageState extends State<Settingspage> {
               SizedBox(height: 16),
               ElevatedButton(
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF007F0E))
+                  backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).primaryColor)
                 ),
                 onPressed: () {
 
                 },
-                child: Text('Save Changes')
+                child: Text('Save Changes', style: TextStyle(color: Theme.of(context).hintColor))
               ),
               SizedBox(height: 16),
             ]
@@ -188,7 +194,7 @@ List<DropdownMenuItem<RateMenuItem>> buildRateMenu(List items){
     rateMenu.add(
       DropdownMenuItem(
         value: item,
-        child: Text(item.rateText)
+        child: Text(item.rateText, style: TextStyle(color: Colors.black))
       )
     );
   }

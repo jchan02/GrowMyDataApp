@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
 import 'package:gmd_project/model/navigation_model.dart';
+import 'package:gmd_project/model/plant_model.dart';
+import 'package:gmd_project/model/globals.dart' as globals;
 import 'package:gmd_project/homepage.dart';
 import 'package:gmd_project/userpage.dart';
 import 'package:gmd_project/plantpage.dart';
@@ -8,18 +9,69 @@ import 'package:gmd_project/statspage.dart';
 import 'package:gmd_project/settingspage.dart';
 
 GlobalKey<NavigatorState> navKey = GlobalKey();
-void main() => runApp(MaterialApp(home: GMDApp()));
+void main() => runApp(GMDApp());
 
-class GMDApp extends StatelessWidget {
+class GMDApp extends StatefulWidget {
+  @override
+  _GMDAppState createState() => _GMDAppState();
+}
+
+class _GMDAppState extends State<GMDApp> {
+  @override
+  void initState() {
+    super.initState();
+    globals.themeNotif.addListener(() {setState((){});});
+  }
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Overview(),
+      theme: ThemeData(
+        primaryColor: Color(0xFF007F0E),
+        accentColor: Colors.green[100],
+        scaffoldBackgroundColor: Colors.white,
+        backgroundColor: Color(0xFFE5E5E5),
+        buttonColor: Color(0xFF969696),
+        cardColor: Color(0xFFBFBFBF),
+        hintColor: Colors.black,
+        secondaryHeaderColor: Colors.white
+      ),
+      darkTheme: ThemeData(
+        primaryColor: Color(0xFF007F0E),
+        accentColor: Colors.green[100],
+        scaffoldBackgroundColor: Color(0xFF1E1E1E),
+        backgroundColor: Color(0xFF262626),
+        buttonColor: Color(0xFF4C4C4C),
+        cardColor: Color(0xFFBFBFBF),
+        hintColor: Colors.white,
+        secondaryHeaderColor: Colors.black
+      ),
+      themeMode: globals.themeNotif.currentTheme()
+    );
+  }
+}
+
+class Overview extends StatefulWidget {
+  @override
+  _OverviewState createState() => _OverviewState();
+}
+
+class _OverviewState extends State<Overview> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
-        backgroundColor: Color(0xFF007F0E),
+        backgroundColor: Theme.of(context).primaryColor,
         title: Center(
-          child: Text("GrowMyData")
+          child: Text("GrowMyData", style: TextStyle(color: Theme.of(context).secondaryHeaderColor))
         ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        label: Text('Temp Test'),
+        onPressed: (() => plantProbes[0].readings.add(PlantReading(
+          time: "1", light: 1, lightQuality: 1, moisture: 1, moistureQuality: 1,
+          humidity: 1, humidityQuality: 1, temperature: 1, temperatureQuality: 1,
+        )))
       ),
       body: Stack(
         children: <Widget> [
@@ -55,40 +107,33 @@ class GMDApp extends StatelessWidget {
               }
             }
           ),
-          NavigationDrawer()
+          NavigationDrawer(),
+          ValueListenableBuilder(
+            valueListenable: globals.loading,
+            builder: (context, value, child) {
+              if(globals.loading.value) return globals.Loader();
+              return Container();
+            }
+          )
         ]
       )
     );
   }
 }
 
-class GMDFrame extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0.0,
-        backgroundColor: Color(0xFF007F0E),
-        title: Center(
-          child: Text("GrowMyData")
-        ),
-      ),
-      body: Stack(
-        children: <Widget> [
-          Homepage(),
-          NavigationDrawer(),
-        ],
-      )
-    );
-  }
-}
-
 class NavigationDrawer extends StatefulWidget {
+  
   @override
   _NavigationDrawerState createState() => _NavigationDrawerState();
 }
 
 class _NavigationDrawerState extends State<NavigationDrawer> with SingleTickerProviderStateMixin{
+  void pageNav(context) async{
+    globals.loading.value = true;
+    await Future.delayed(Duration(milliseconds: 500));
+    navKey.currentState.pushNamed('page'+selectedIndex.toString());
+    globals.loading.value = false;
+  }
   bool isCollapsed = false;
   int selectedIndex = 0;
   AnimationController _animationController;
@@ -110,10 +155,10 @@ class _NavigationDrawerState extends State<NavigationDrawer> with SingleTickerPr
     return Container(
       width: widthAnim.value,
       decoration: BoxDecoration(
-        color: Color(0xFFE5E5E5),
+        color: Theme.of(context).backgroundColor,
         border: Border(
           right: BorderSide(
-            color: Color(0xFF969696),
+            color: Theme.of(context).buttonColor,
             width: 2.0,
           )
         )
@@ -130,7 +175,7 @@ class _NavigationDrawerState extends State<NavigationDrawer> with SingleTickerPr
             },
             child: Icon(
               Icons.menu,
-              color: Color(0xFF969696),
+              color: Theme.of(context).buttonColor,
               size: 40.0,
             ),
           ),
@@ -143,9 +188,9 @@ class _NavigationDrawerState extends State<NavigationDrawer> with SingleTickerPr
                     if (selectedIndex != counter) {
                       setState(() {
                         selectedIndex = counter;
-                      });
-                      navKey.currentState.popUntil(ModalRoute.withName('/'));
-                      navKey.currentState.pushNamed('page'+selectedIndex.toString());
+                        navKey.currentState.popUntil(ModalRoute.withName('/'));
+                      }); 
+                      pageNav(context);
                     }
                   },
                   title: navItems[counter].title,
@@ -193,9 +238,9 @@ class _CollapsingListTileState extends State<CollapsingListTile> {
         margin: EdgeInsets.symmetric(horizontal: 6.0, vertical: 8.0),
         child: Row(
           children: <Widget>[
-           Icon(widget.icon, color: widget.isSelected ? Color(0xFF007F0E) : Color(0xFF969696), size: 40.0,),
+           Icon(widget.icon, color: widget.isSelected ? Theme.of(context).primaryColor : Theme.of(context).buttonColor, size: 40.0,),
             SizedBox(width: (widthAnim.value >= 125) ? 10 : 0),
-            (widthAnim.value >= 125) ? Text(widget.title) : Container()
+            (widthAnim.value >= 125) ? Text(widget.title, style: TextStyle(color: Theme.of(context).hintColor)) : Container()
           ],
         )
       )

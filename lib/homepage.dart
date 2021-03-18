@@ -2,22 +2,37 @@ import 'package:flutter/material.dart';
 import 'package:gmd_project/model/plant_model.dart';
 import 'package:gmd_project/model/globals.dart' as globals;
 
-class Homepage extends StatelessWidget {
+class Homepage extends StatefulWidget {
+  @override
+  _HomepageState createState() => _HomepageState();
+}
+
+class _HomepageState extends State<Homepage> {
+  Future homeRefresh() async{
+    setState(() => globals.loading.value = true);
+    await Future.delayed(Duration(milliseconds: 500));
+    globals.loading.value = false;
+  }
   @override
   Widget build(BuildContext context) {
     return Scrollbar(
       thickness: 3.0,
-      child: ListView.builder(
-        padding: EdgeInsets.only(left: 56.0),
-        itemBuilder: (context, counter) {
-          return HomePlantView(
-            id: plantProbes[counter].id,
-            name: plantProbes[counter].name,
-            favorite: plantProbes[counter].favorite,
-            readings: plantProbes[counter].readings,
-          );
-        },
-        itemCount: plantProbes.length,
+      child: RefreshIndicator(
+        color: Theme.of(context).primaryColor,
+        child: ListView.builder(
+          padding: EdgeInsets.only(left: 56.0),
+          itemBuilder: (context, counter) {
+            return HomePlantView(
+              id: plantProbes[counter].id,
+              name: plantProbes[counter].name,
+              favorite: plantProbes[counter].favorite,
+              readings: plantProbes[counter].readings,
+            );
+          },
+          itemCount: plantProbes.length,
+        ),
+        onRefresh: homeRefresh,
+        displacement: 0,
       )
     );
   }
@@ -44,22 +59,22 @@ class _HomePlantViewState extends State<HomePlantView> {
               children: <Widget> [
                 Container(
                   decoration: BoxDecoration(
-                    color: Color(0xFFE5E5E5),
+                    color: Theme.of(context).backgroundColor,
                     border: Border.all(
-                    color: Color(0xFF969696),
+                    color: Theme.of(context).buttonColor,
                     width: 2.0,
                    )
                   ),
                   margin: EdgeInsets.only(right: 8.0, left: 8.0),
                   width: 125,
                   height: 100,
-                  child: Center(child: Icon(Icons.image_not_supported, color: Color(0xFFBFBFBF), size: 90.0)),
+                  child: Center(child: Icon(Icons.image_not_supported, color: Theme.of(context).cardColor, size: 90.0)),
                 ),
                 Container(
                   margin: EdgeInsets.only(right: 9.0, left: 9.0, top: 1.0),
                   width: 23,
                   height: 12,
-                  child: Icon(Icons.star, color: Color(0xFF969696), size: 25.0)
+                  child: Icon(Icons.star, color: Theme.of(context).buttonColor, size: 25.0)
                 ),
                 if(widget.favorite == true) Container(
                   margin: EdgeInsets.only(right: 9.0, left: 10.0, top: 4.0),
@@ -71,7 +86,7 @@ class _HomePlantViewState extends State<HomePlantView> {
                   decoration: BoxDecoration(
                     color: Colors.black,
                     border: Border.all(
-                    color: Color(0xFF969696),
+                    color: Theme.of(context).buttonColor,
                     width: 1.0,
                    )
                   ),
@@ -93,23 +108,23 @@ class _HomePlantViewState extends State<HomePlantView> {
               height: 25,
               child: Container(
                 decoration: BoxDecoration(
-                color: Color(0xFFE5E5E5),
+                color: Theme.of(context).backgroundColor,
                 border: Border(
-                  bottom: BorderSide(color: Color(0xFF969696), width: 2.0),
-                  left: BorderSide(color: Color(0xFF969696), width: 2.0),
-                  right: BorderSide(color: Color(0xFF969696), width: 2.0),
+                  bottom: BorderSide(color: Theme.of(context).buttonColor, width: 2.0),
+                  left: BorderSide(color: Theme.of(context).buttonColor, width: 2.0),
+                  right: BorderSide(color: Theme.of(context).buttonColor, width: 2.0),
                 )
               ),
               child: Row(
                 children: <Widget> [
-                  Icon(Icons.photo_camera, color: Color(0xFF969696)),
+                  Icon(Icons.photo_camera, color: Theme.of(context).buttonColor),
                   Expanded(child: Text(
                     widget.name,
-                    style: TextStyle(fontSize:11),
+                    style: TextStyle(fontSize:11, color: Theme.of(context).hintColor),
                     overflow: TextOverflow.ellipsis
                     )
                   ),
-                  Icon(Icons.edit, color: Color(0xFF969696))
+                  Icon(Icons.edit, color: Theme.of(context).buttonColor)
                 ]
               )
               )
@@ -119,9 +134,9 @@ class _HomePlantViewState extends State<HomePlantView> {
         Expanded(
           child: Container(
             decoration: BoxDecoration(
-              color: Color(0xFFE5E5E5),
+              color: Theme.of(context).backgroundColor,
               border: Border.all(
-                color: Color(0xFF969696),
+                color: Theme.of(context).buttonColor,
                 width: 2.0,
               )
             ),
@@ -140,7 +155,7 @@ class _HomePlantViewState extends State<HomePlantView> {
                         Color.fromARGB(255, 255, (255*(2*widget.readings.last.lightQuality)).round(), 0),
                       border: Border(
                         bottom: BorderSide(
-                          color: Color(0xFF969696),
+                          color: Theme.of(context).buttonColor,
                           width: 2.0,
                         )
                       )
@@ -153,7 +168,7 @@ class _HomePlantViewState extends State<HomePlantView> {
                         ),
                         Expanded(
                           child: Align(
-                            child: Text(widget.readings.last.light.toStringAsFixed(2) + ' lm'),
+                            child: Text(widget.readings.last.light.toStringAsFixed(2) + ' lux'),
                             alignment: Alignment.centerRight
                           )
                         ),
@@ -171,7 +186,7 @@ class _HomePlantViewState extends State<HomePlantView> {
                         Color.fromARGB(255, 255, (255*(2*widget.readings.last.moistureQuality)).round(), 0),
                       border: Border(
                         bottom: BorderSide(
-                          color: Color(0xFF969696),
+                          color: Theme.of(context).buttonColor,
                           width: 2.0,
                         )
                       )
@@ -184,7 +199,7 @@ class _HomePlantViewState extends State<HomePlantView> {
                         ),
                         Expanded(
                           child: Align(
-                            child: Text(widget.readings.last.moisture.toStringAsFixed(2)),
+                            child: Text(widget.readings.last.moisture.toStringAsFixed(2) + ' %'),
                             alignment: Alignment.centerRight
                           ),
                         ),
@@ -202,7 +217,7 @@ class _HomePlantViewState extends State<HomePlantView> {
                         Color.fromARGB(255, 255, (255*(2*widget.readings.last.humidityQuality)).round(), 0),
                       border: Border(
                         bottom: BorderSide(
-                          color: Color(0xFF969696),
+                          color: Theme.of(context).buttonColor,
                           width: 2.0,
                         )
                       )

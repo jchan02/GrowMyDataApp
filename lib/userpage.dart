@@ -42,7 +42,7 @@ class Userpage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: ElevatedButton(
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF007F0E))
+                      backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).primaryColor)
                     ),
                     onPressed: () {
                       if (formKey.currentState.validate()) {

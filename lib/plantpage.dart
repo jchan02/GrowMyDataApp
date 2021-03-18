@@ -8,7 +8,7 @@ class Plantpage extends StatelessWidget {
       padding: EdgeInsets.only(left: 55.0),
       child: Scaffold(
         bottomNavigationBar: BottomAppBar(
-          color: Color(0xFF007F0E),
+          color: Theme.of(context).primaryColor,
           child: Row(
             children: <Widget>[
               Text(
@@ -24,17 +24,17 @@ class Plantpage extends StatelessWidget {
           columnSpacing: 30.0,
           columns: [
             DataColumn(
-              label: Text('Name'),
+              label: Text('Name', style: TextStyle(color: Theme.of(context).hintColor)),
               numeric: false,
               tooltip: 'Plant name'
             ),
             DataColumn(
-              label: Text('ID'),
+              label: Text('ID', style: TextStyle(color: Theme.of(context).hintColor)),
               numeric: true,
               tooltip: 'Plant probe ID'
             ),
             DataColumn(
-              label: Text('Last Reading'),
+              label: Text('Last Reading', style: TextStyle(color: Theme.of(context).hintColor)),
               numeric: false,
               tooltip: 'Time of most recent reading'
             ),
@@ -48,6 +48,7 @@ class Plantpage extends StatelessWidget {
                     child: Text(
                       plant.name,
                       overflow: TextOverflow.ellipsis,
+                      style: TextStyle(color: Theme.of(context).hintColor)
                     ),
                   )
                 ),
@@ -56,7 +57,8 @@ class Plantpage extends StatelessWidget {
                     width: 20,
                     child: Text(
                       plant.id,
-                      overflow: TextOverflow.ellipsis
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(color: Theme.of(context).hintColor)
                     ),
                   )
                 ),
@@ -65,7 +67,8 @@ class Plantpage extends StatelessWidget {
                     width: 100,
                     child: Text(
                       plant.readings.last.time,
-                      overflow: TextOverflow.ellipsis
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(color: Theme.of(context).hintColor)
                     ),
                   )
                 ),

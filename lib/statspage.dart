@@ -5,7 +5,7 @@ class Statspage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(left: 55.0),
-      child: Text('Stats page')
+      child: Text('Stats page', style: TextStyle(color: Theme.of(context).hintColor))
     );
   }
 }
