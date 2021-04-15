@@ -246,10 +246,15 @@ class _UserpageState extends State<Userpage> {
                                                   )
                                                 )
                                               );
-                                              globals.email = emailController.text;
-                                              passwordController.text = '';
-                                              Navigator.of(context, rootNavigator: true).pop();
-                                              setState(()=> globals.loading.value = false);
+                                              signupMail(emailController.text, usernameController.text).then((String result){
+                                                globals.email = emailController.text;
+                                                globals.notifEnable = true;
+                                                globals.notifThreshold = 0.3;
+                                                plantProbes = [];
+                                                passwordController.text = '';
+                                                Navigator.of(context, rootNavigator: true).pop();
+                                                setState(()=> globals.loading.value = false);
+                                              });
                                             });
                                           }
                                         });
@@ -465,6 +470,14 @@ Future<String> signup(String email, String password, String name) async{
   String theUrl = "https://71142021.000webhostapp.com/setUser.php";
   var res = await http.post(Uri.encodeFull(theUrl), headers: {"Accept":"application/json"},
     body: {'email': email, 'loginPassword': password, 'theName' : name});
+  var respBody = res.body;
+  return respBody;
+}
+
+Future<String> signupMail(String email, String name) async{
+  String theUrl = "https://71142021.000webhostapp.com/sendingEmail.php";
+  var res = await http.post(Uri.encodeFull(theUrl), headers: {"Accept":"application/json"},
+    body: {'email': email, 'theName' : name});
   var respBody = res.body;
   return respBody;
 }

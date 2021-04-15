@@ -74,7 +74,7 @@ class Statspage extends StatelessWidget {
                 LineChartBarData(
                   spots: [
                     FlSpot(double.parse(plantProbes[0].readings[0].time.minute.toString()), plantProbes[0].readings[0].light),
-                    FlSpot(double.parse(plantProbes[0].readings[1].time.minute.toString()), plantProbes[0].readings[1].light)
+                    FlSpot(double.parse(plantProbes[0].readings[1].time.minute.toString()), plantProbes[0].readings[1].light),
                   ],
                   colors: [Theme.of(context).primaryColor],
                 )
