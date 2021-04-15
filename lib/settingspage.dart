@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:gmd_project/model/globals.dart' as globals;
 
 class Settingspage extends StatefulWidget {
@@ -21,15 +22,17 @@ class _SettingspageState extends State<Settingspage> {
     super.initState();
   }
   Widget build(BuildContext context) {
-    return ListView(
-      padding: EdgeInsets.only(left: 55.0, top: 16),
+    return Container(
+      margin: EdgeInsets.only(left: 55, top: 16),
+      child: (globals.email == '') ? Center(child: Text('Sign in to change your settings', style: TextStyle(color: Theme.of(context).hintColor)))
+      : ListView(
       children: ListTile.divideTiles(
         context: context,
         tiles: [
           Column(
             children: <Widget> [
               Text('Delay between plant readings', style: TextStyle(color: Theme.of(context).hintColor)),
-              Text('(applies after next reading)', style: TextStyle(color: Theme.of(context).hintColor)),
+              Text('(applies to newly registered plants)', style: TextStyle(color: Theme.of(context).hintColor)),
               Container(
                 color: Colors.white,
                 height: 40,
@@ -82,10 +85,12 @@ class _SettingspageState extends State<Settingspage> {
             children: <Widget> [
               SizedBox(height: 16),
               Text('Enable push notifications', style: TextStyle(color: Theme.of(context).hintColor)),
+              Text('(Current = ' + globals.notifEnable.toString() + ')', style: TextStyle(color: Theme.of(context).hintColor)),
               Switch(
                 value: notifEnable,
                 activeColor: Theme.of(context).primaryColor,
                 activeTrackColor: Theme.of(context).accentColor,
+                inactiveTrackColor: Theme.of(context).buttonColor,
                 onChanged: (value) {
                   setState(() {
                     notifEnable = !notifEnable;
@@ -94,6 +99,7 @@ class _SettingspageState extends State<Settingspage> {
               ),
               SizedBox(height: 16),
               Text('Reading quality level to trigger notification', style: TextStyle(color: Theme.of(context).hintColor)),
+              Text('(Current = ' + (globals.notifThreshold).round().toString() + '%)', style: TextStyle(color: Theme.of(context).hintColor)),
               Slider(
                 value: notifThreshold,
                 min: 0,
@@ -105,7 +111,6 @@ class _SettingspageState extends State<Settingspage> {
                 onChanged: (double value) {
                   setState (() {
                     notifThreshold = value;
-                    globals.notifThreshold = value;
                   });
                 }
               ),
@@ -120,6 +125,7 @@ class _SettingspageState extends State<Settingspage> {
                 value: darkMode,
                 activeColor: Theme.of(context).primaryColor,
                 activeTrackColor: Theme.of(context).accentColor,
+                inactiveTrackColor: Theme.of(context).buttonColor,
                 onChanged: (value) {
                   setState(() {
                     darkMode = !darkMode;
@@ -141,7 +147,7 @@ class _SettingspageState extends State<Settingspage> {
                 onPressed: () {
 
                 },
-                child: Text('Request Readings File', style: TextStyle(color: Theme.of(context).hintColor))
+                child: Text('Request Readings File', style: TextStyle(color: Theme.of(context).secondaryHeaderColor))
               ),
               SizedBox(height: 16),
             ]
@@ -154,16 +160,33 @@ class _SettingspageState extends State<Settingspage> {
                   backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).primaryColor)
                 ),
                 onPressed: () {
-
+                  setState((){
+                    globals.loading.value = true;
+                    globals.notifEnable = notifEnable;
+                    globals.notifThreshold = notifThreshold;
+                    updateSettings(globals.email, notifEnable, notifThreshold).then((String result){
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          duration: Duration(seconds: 2),
+                          backgroundColor: (result == 'Settings changed successfully') ? Theme.of(context).primaryColor : Colors.red,
+                          content: Container(
+                            child:  Text(result, style: TextStyle(color: Theme.of(context).secondaryHeaderColor)
+                            )
+                          )
+                        )
+                      );
+                      globals.loading.value = false;
+                    });
+                  });
                 },
-                child: Text('Save Changes', style: TextStyle(color: Theme.of(context).hintColor))
+                child: Text('Save Changes', style: TextStyle(color: Theme.of(context).secondaryHeaderColor))
               ),
               SizedBox(height: 16),
             ]
           ),
         ]
       ).toList()
-    );
+    ));
   }
 }
 
@@ -199,4 +222,12 @@ List<DropdownMenuItem<RateMenuItem>> buildRateMenu(List items){
     );
   }
   return rateMenu;
+}
+
+Future<String> updateSettings(String email, bool enable, double threshold) async{
+  String theUrl = "https://71142021.000webhostapp.com/updateSettings.php";
+  var res = await http.post(Uri.encodeFull(theUrl), headers: {"Accept":"application/json"},
+    body: {'email':email, 'notifEnable':enable ? '1' : '0', 'notifThreshold':(threshold/100).toString()});
+  var respBody = res.body;
+  return respBody;
 }

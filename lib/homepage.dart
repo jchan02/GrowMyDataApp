@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gmd_project/model/plant_model.dart';
 import 'package:gmd_project/model/globals.dart' as globals;
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Homepage extends StatefulWidget {
   @override
@@ -10,45 +12,60 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   Future homeRefresh() async{
     setState(() => globals.loading.value = true);
+    if(globals.email != '') getUserPlants(globals.email).then((String result){
+      if(result.contains('[{')) plantProbes = (jsonDecode(result) as List).map((i) => PlantModel.fromJson(i)).toList();
+      plantProbes.forEach((item){
+        getPlantTraits(item.id).then((String result){
+            if(result.contains('[{')) item.readings = (jsonDecode(result) as List).map((i) => PlantReading.fromJson(i)).toList();
+        });
+      });
+    });
     await Future.delayed(Duration(milliseconds: 500));
-    globals.loading.value = false;
+    setState(() => globals.loading.value = false);
   }
   @override
   Widget build(BuildContext context) {
-    return Scrollbar(
-      thickness: 3.0,
-      child: RefreshIndicator(
-        color: Theme.of(context).primaryColor,
-        child: ListView.builder(
-          padding: EdgeInsets.only(left: 56.0),
-          itemBuilder: (context, counter) {
-            return HomePlantView(
-              id: plantProbes[counter].id,
-              name: plantProbes[counter].name,
-              favorite: plantProbes[counter].favorite,
-              readings: plantProbes[counter].readings,
-            );
-          },
-          itemCount: plantProbes.length,
-        ),
-        onRefresh: homeRefresh,
-        displacement: 0,
+    return Container(
+      margin: EdgeInsets.only(left: (globals.email == '') ? 55 : 0),
+      child: (globals.email == '') ? Center(child: Text((plantProbes.length == 0 && globals.email != '') ? 'No plants have been registered' : 'Sign in to view your plants', style: TextStyle(color: Theme.of(context).hintColor)))
+      : Scrollbar(
+        thickness: 3.0,
+        child: RefreshIndicator(
+          color: Theme.of(context).primaryColor,
+          child: ListView.builder(
+            padding: EdgeInsets.only(left: 56.0),
+            itemBuilder: (context, counter) {
+              return HomePlantView(
+                index: counter,
+                id: plantProbes[counter].id.toString(),
+                name: plantProbes[counter].name,
+                favorite: plantProbes[counter].favorite,
+                readings: plantProbes[counter].readings,
+              );
+            },
+            itemCount: plantProbes.length,
+          ),
+          onRefresh: homeRefresh,
+          displacement: 0,
+        )
       )
     );
   }
 }
-
+//ignore: must_be_immutable
 class HomePlantView extends StatefulWidget {
-  final String id;
-  final String name;
-  final bool favorite;
-  final List<PlantReading> readings;
-  HomePlantView({this.id, this.name, this.favorite, this.readings});
+  int index;
+  String id;
+  String name;
+  bool favorite;
+  List<PlantReading> readings;
+  HomePlantView({this.index, this.id, this.name, this.favorite, this.readings});
   @override
   _HomePlantViewState createState() => _HomePlantViewState();
 }
 
 class _HomePlantViewState extends State<HomePlantView> {
+  final renameKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -124,7 +141,72 @@ class _HomePlantViewState extends State<HomePlantView> {
                     overflow: TextOverflow.ellipsis
                     )
                   ),
-                  Icon(Icons.edit, color: Theme.of(context).buttonColor)
+                  InkWell(
+                    child: Icon(Icons.edit, color: Theme.of(context).buttonColor),
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (_) => AlertDialog(
+                          title: Text('Enter a new name for \n${widget.name}', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).hintColor),),
+                          elevation: 0,
+                          backgroundColor: Theme.of(context).backgroundColor,
+                          content: Container(
+                            child: Form(
+                              key: renameKey,
+                              child: TextFormField(
+                                style: TextStyle(color: Theme.of(context).hintColor),
+                                onSaved: (input) => {
+                                  setState(() => globals.loading.value = true),
+                                  plantProbes[widget.index].name = input,
+                                  widget.name = input,
+                                  updatePlantName(input, widget.id.toString()).then((String result){
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        duration: Duration(seconds: 2),
+                                        backgroundColor: Theme.of(context).primaryColor,
+                                        content: Container(
+                                          child: Text(result, style: TextStyle(color: Theme.of(context).secondaryHeaderColor))
+                                        )
+                                      )
+                                    );
+                                    setState(() => globals.loading.value = false);
+                                  }),
+                                },
+                                validator: (value) {
+                                  if (value.isEmpty){
+                                    return 'Please enter a new name';
+                                  }
+                                  return null;
+                                },
+                                initialValue: widget.name,
+                                decoration: InputDecoration(
+                                  hintText: '',
+                                ),
+                              )
+                            )
+                          ),
+                          actions: [
+                            TextButton(
+                              child: Text('Cancel', style: TextStyle(color: Theme.of(context).primaryColor)),
+                              onPressed: () {
+                                Navigator.of(context, rootNavigator: true).pop();
+                              }
+                            ),
+                            TextButton(
+                              child: Text('Confirm', style: TextStyle(color: Theme.of(context).primaryColor)),
+                              onPressed: () {
+                                if(renameKey.currentState.validate()){
+                                  renameKey.currentState.save();
+                                  Navigator.of(context, rootNavigator: true).pop();
+                                }
+                              }
+                            ) ,
+                          ],
+                        )
+                      );
+                    }
+                  )
                 ]
               )
               )
@@ -150,9 +232,9 @@ class _HomePlantViewState extends State<HomePlantView> {
                   child: Container(
                     height: 31,
                     decoration: BoxDecoration(
-                      color: (widget.readings.last.lightQuality >= 0.5) ? 
+                      color: (widget.readings.length > 0) ? (widget.readings.last.lightQuality >= 0.5) ? 
                         Color.fromARGB(255, (255*(2-2*widget.readings.last.lightQuality)).round(), 255, 0) :
-                        Color.fromARGB(255, 255, (255*(2*widget.readings.last.lightQuality)).round(), 0),
+                        Color.fromARGB(255, 255, (255*(2*widget.readings.last.lightQuality)).round(), 0) : Theme.of(context).backgroundColor,
                       border: Border(
                         bottom: BorderSide(
                           color: Theme.of(context).buttonColor,
@@ -164,11 +246,12 @@ class _HomePlantViewState extends State<HomePlantView> {
                       children: <Widget> [
                         Icon(
                           Icons.wb_sunny_outlined,
-                          color: Colors.black,
+                          color: (widget.readings.length > 0) ? Colors.black : Theme.of(context).hintColor
                         ),
                         Expanded(
                           child: Align(
-                            child: Text(widget.readings.last.light.toStringAsFixed(2) + ' lux'),
+                            child: (widget.readings.length > 0) ? Text(widget.readings.last.light.toStringAsFixed(2) + ' lux') :
+                              Text('No readings', style: TextStyle(color: Theme.of(context).hintColor)),
                             alignment: Alignment.centerRight
                           )
                         ),
@@ -181,9 +264,9 @@ class _HomePlantViewState extends State<HomePlantView> {
                   child: Container(
                     height: 30,
                     decoration: BoxDecoration(
-                      color: (widget.readings.last.moistureQuality >= 0.5) ? 
+                      color: (widget.readings.length > 0) ? (widget.readings.last.moistureQuality >= 0.5) ? 
                         Color.fromARGB(255, (255*(2-2*widget.readings.last.moistureQuality)).round(), 255, 0) :
-                        Color.fromARGB(255, 255, (255*(2*widget.readings.last.moistureQuality)).round(), 0),
+                        Color.fromARGB(255, 255, (255*(2*widget.readings.last.moistureQuality)).round(), 0) : Theme.of(context).backgroundColor,
                       border: Border(
                         bottom: BorderSide(
                           color: Theme.of(context).buttonColor,
@@ -195,11 +278,12 @@ class _HomePlantViewState extends State<HomePlantView> {
                       children: <Widget> [
                         Icon(
                           Icons.opacity,
-                          color: Colors.black,
+                          color: (widget.readings.length > 0) ? Colors.black : Theme.of(context).hintColor
                         ),
                         Expanded(
                           child: Align(
-                            child: Text(widget.readings.last.moisture.toStringAsFixed(2) + ' %'),
+                            child: (widget.readings.length > 0) ? Text(widget.readings.last.moisture.toStringAsFixed(2) + ' %') :
+                              Text('No readings', style: TextStyle(color: Theme.of(context).hintColor)),
                             alignment: Alignment.centerRight
                           ),
                         ),
@@ -212,9 +296,9 @@ class _HomePlantViewState extends State<HomePlantView> {
                   child: Container(
                     height: 30,
                     decoration: BoxDecoration(
-                      color: (widget.readings.last.humidityQuality >= 0.5) ? 
+                      color: (widget.readings.length > 0) ? (widget.readings.last.humidityQuality >= 0.5) ? 
                         Color.fromARGB(255, (255*(2-2*widget.readings.last.humidityQuality)).round(), 255, 0) :
-                        Color.fromARGB(255, 255, (255*(2*widget.readings.last.humidityQuality)).round(), 0),
+                        Color.fromARGB(255, 255, (255*(2*widget.readings.last.humidityQuality)).round(), 0) : Theme.of(context).backgroundColor,
                       border: Border(
                         bottom: BorderSide(
                           color: Theme.of(context).buttonColor,
@@ -226,11 +310,12 @@ class _HomePlantViewState extends State<HomePlantView> {
                       children: <Widget> [
                         Icon(
                           Icons.wb_cloudy_outlined,
-                          color: Colors.black,
+                          color: (widget.readings.length > 0) ? Colors.black : Theme.of(context).hintColor
                         ),
                         Expanded(
                           child: Align(
-                            child: Text(widget.readings.last.humidity.toStringAsFixed(2) + ' %'),
+                            child: (widget.readings.length > 0) ? Text(widget.readings.last.humidity.toStringAsFixed(2) + ' %') :
+                              Text('No readings', style: TextStyle(color: Theme.of(context).hintColor)),
                             alignment: Alignment.centerRight
                           )
                         ),
@@ -243,22 +328,22 @@ class _HomePlantViewState extends State<HomePlantView> {
                   child: Container(
                     height: 30,
                     decoration: BoxDecoration(
-                      color: (widget.readings.last.temperatureQuality >= 0.5) ? 
+                      color: (widget.readings.length > 0) ? (widget.readings.last.temperatureQuality >= 0.5) ? 
                         Color.fromARGB(255, (255*(2-2*widget.readings.last.temperatureQuality)).round(), 255, 0) :
-                        Color.fromARGB(255, 255, (255*(2*widget.readings.last.temperatureQuality)).round(), 0),
+                        Color.fromARGB(255, 255, (255*(2*widget.readings.last.temperatureQuality)).round(), 0) : Theme.of(context).backgroundColor,
                     ),
                     child: Row(
                       children: <Widget> [
                         Icon(
                           Icons.thermostat_rounded,
-                          color: Colors.black,
+                          color: (widget.readings.length > 0) ? Colors.black : Theme.of(context).hintColor
                         ),
                         Expanded(
                           child: Align(
-                            child: Text(
+                            child: (widget.readings.length > 0) ? Text(
                               globals.tempUseF ? widget.readings.last.temperature.toStringAsFixed(2) + ' °F'  
                               : ((widget.readings.last.temperature - 32) * (5/9)).toStringAsFixed(2) + ' °C'
-                              ),
+                              ) : Text('No readings', style: TextStyle(color: Theme.of(context).hintColor)),
                             alignment: Alignment.centerRight
                           )
                         ),
@@ -273,4 +358,30 @@ class _HomePlantViewState extends State<HomePlantView> {
       ] 
     );
   }
+}
+
+Future<String> getUserPlants(String email) async{
+  var url = 'https://71142021.000webhostapp.com/getUserPlants.php';
+  String queryString = Uri(queryParameters: {'emailAddress':email}).query;
+  var requestUrl = url + '?' + queryString;
+  http.Response response = await http.get(requestUrl);
+  var data = response.body;
+  return data.toString();
+}
+
+Future<String> getPlantTraits(int id) async{
+  var url = 'https://71142021.000webhostapp.com/getPlantTraits.php';
+  String queryString = Uri(queryParameters: {'plantID':id.toString()}).query;
+  var requestUrl = url + '?' + queryString;
+  http.Response response = await http.get(requestUrl);
+  var data = response.body;
+  return data.toString();
+}
+
+Future<String> updatePlantName(String name, String id) async{
+  String theUrl = "https://71142021.000webhostapp.com/updatePlantName.php";
+  var res = await http.post(Uri.encodeFull(theUrl), headers: {"Accept":"application/json"},
+    body: {'plantName': name, 'plantId': id});
+  var respBody = res.body;
+  return respBody;
 }

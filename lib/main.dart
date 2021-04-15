@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gmd_project/model/navigation_model.dart';
-import 'package:gmd_project/model/plant_model.dart';
 import 'package:gmd_project/model/globals.dart' as globals;
 import 'package:gmd_project/homepage.dart';
 import 'package:gmd_project/userpage.dart';
 import 'package:gmd_project/plantpage.dart';
 import 'package:gmd_project/statspage.dart';
+import 'package:gmd_project/tipspage.dart';
 import 'package:gmd_project/settingspage.dart';
 
 GlobalKey<NavigatorState> navKey = GlobalKey();
@@ -66,13 +66,6 @@ class _OverviewState extends State<Overview> {
           child: Text("GrowMyData", style: TextStyle(color: Theme.of(context).secondaryHeaderColor))
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        label: Text('Temp Test'),
-        onPressed: (() => plantProbes[0].readings.add(PlantReading(
-          time: "1", light: 1, lightQuality: 1, moisture: 1, moistureQuality: 1,
-          humidity: 1, humidityQuality: 1, temperature: 1, temperatureQuality: 1,
-        )))
-      ),
       body: Stack(
         children: <Widget> [
           Navigator(
@@ -92,6 +85,11 @@ class _OverviewState extends State<Overview> {
                 case 'page3':
                   return PageRouteBuilder(
                     pageBuilder: (context, animation1, animation2) => Statspage(),
+                    transitionDuration: Duration(seconds: 0),
+                  );
+                case 'page4':
+                  return PageRouteBuilder(
+                    pageBuilder: (context, animation1, animation2) => Tipspage(),
                     transitionDuration: Duration(seconds: 0),
                   );
                 case 'page5':
