@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:gmd_project/model/globals.dart' as globals;
 
 class Tipspage extends StatefulWidget {
   @override
@@ -15,6 +16,7 @@ class _TipspageState extends State<Tipspage> {
   String test6 = '';
   String test7 = '';
   final getKey = GlobalKey<FormState>();
+  final getKey2 = GlobalKey<FormState>();
   @override
   void initState() {
     super.initState();
@@ -67,21 +69,61 @@ class _TipspageState extends State<Tipspage> {
               backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).primaryColor)
             ),
             onPressed: () {
-              addPlantTraits().then((var result){setState((){test2 = result.toString();});});
+              getInfo('email@email.com').then((String result){setState((){test2 = result;});});
             },
-            child: Text('Add Plant Traits'),
+            child: Text('Get User 2'),
           ),
-          Text('Reading ID: ' + test2, style: TextStyle(color: Theme.of(context).hintColor)),
+          Text(test2, style: TextStyle(color: Theme.of(context).hintColor)),
           ElevatedButton(
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).primaryColor)
             ),
             onPressed: () {
-              addUser().then((var result){setState((){test3 = result.toString();});});
+              setState(() => globals.loading.value = true);
+              getInfo('email@email.com').then((var result){setState((){test3 = result.toString(); setState(() => globals.loading.value = false);});});
             },
-            child: Text('Add User'),
+            child: Text('Get User 3'),
           ),
           Text(test3, style: TextStyle(color: Theme.of(context).hintColor)),
+          Form(
+            key: getKey2,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                TextFormField(
+                  style: TextStyle(color: Theme.of(context).hintColor),
+                  decoration: const InputDecoration(
+                    hintText: 'Enter your email',
+                  ),
+                  onSaved: (input) => {
+                    setState(() => globals.loading.value = true),
+                    getInfo(input).then((String result){setState((){test6 = result; setState(() => globals.loading.value = false);});})
+                  },
+                  validator: (value) {
+                   if (value.isEmpty) {
+                      return 'Please enter a valid email';
+                    }
+                    return null;
+                  },
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).primaryColor)
+                    ),
+                    onPressed: () {
+                      if (getKey2.currentState.validate()) {
+                        getKey2.currentState.save();
+                      }
+                    },
+                    child: Text('Get User 4'),
+                  ),
+                ),
+              ]
+            )   
+          ),
+          Text(test6, style: TextStyle(color: Theme.of(context).hintColor)),
           ElevatedButton(
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).primaryColor)
@@ -102,24 +144,14 @@ class _TipspageState extends State<Tipspage> {
             child: Text('Get Plant Readings'),
           ),
           Text(test5, style: TextStyle(color: Theme.of(context).hintColor)),
-          ElevatedButton(
+                    ElevatedButton(
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).primaryColor)
             ),
             onPressed: () {
-              addPlant().then((var result){setState((){test6 = result.toString();});});
+              addPlantTraits().then((var result){setState((){test7 = result.toString();});});
             },
-            child: Text('Set Plant'),
-          ),
-          Text(test6, style: TextStyle(color: Theme.of(context).hintColor)),
-          ElevatedButton(
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).primaryColor)
-            ),
-            onPressed: () {
-              updateSettings().then((var result){setState((){test7 = result.toString();});});
-            },
-            child: Text('Update Settings'),
+            child: Text('Add Plant Traits'),
           ),
           Text(test7, style: TextStyle(color: Theme.of(context).hintColor)),
         ]
@@ -140,7 +172,7 @@ Future<String> getInfo(String email) async{
 Future<String> addPlantTraits() async{
   String theUrl = "https://71142021.000webhostapp.com/setPlantTraits.php";
   var res = await http.post(Uri.encodeFull(theUrl), headers: {"Accept":"application/json"},
-    body: {'plantId': '26' , 'temperature': '0.4' , 'moisture' : '0.8' , 'humidity' : '0.6' , 'sunlight' : '0.3'});
+    body: {'plantId': '30' , 'temperature': '65' , 'moisture' : '80' , 'humidity' : '40' , 'sunlight' : '20000'});
   var respBody = res.body;
   return respBody;
 }
@@ -185,10 +217,9 @@ Future sendMail(String email) async{
   await http.get(requestUrl);
 }
 
-Future<String> updateSettings() async{
-  String theUrl = "https://71142021.000webhostapp.com/updateSettings.php";
-  var res = await http.post(Uri.encodeFull(theUrl), headers: {"Accept":"application/json"},
-    body: {'email':'email@email.com', 'notifEnable': '1', 'notifThreshold' : '0.3'});
-  var respBody = res.body;
-  return respBody;
+Future sendMailData() async{
+  var url = 'https://71142021.000webhostapp.com/mailUser.php';
+  String queryString = Uri(queryParameters: {'email':'jchan02@manhattan.edu', 'theName':'Jason'}).query;
+  var requestUrl = url + '?' + queryString;
+  await http.get(requestUrl);
 }

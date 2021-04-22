@@ -43,6 +43,7 @@ class _PlantpageState extends State<Plantpage> {
               )
             ),
             body: DataTable(
+              showCheckboxColumn: false,
               columnSpacing: 30.0,
               columns: [
                 DataColumn(
@@ -102,7 +103,111 @@ class _PlantpageState extends State<Plantpage> {
                           )
                       )
                     ),
-                  ]
+                  ],
+                  onSelectChanged: (bool selected) {
+                    if(selected && plant.readings.length > 0) {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        builder: (_) => AlertDialog(
+                          title: Text('Readings for ' + plant.name, textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).hintColor), overflow: TextOverflow.ellipsis,),
+                          elevation: 0,
+                          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                          content: Container(
+                            child: DataTable(
+                              columnSpacing: 0.0,
+                              columns: [
+                                DataColumn(
+                                  label: Text('Time', style: TextStyle(color: Theme.of(context).hintColor, fontSize: 10)),
+                                  numeric: false,
+                                  tooltip: 'Time of reading'
+                                ),
+                                DataColumn(
+                                  label: Text('Light\n(lux)', style: TextStyle(color: Theme.of(context).hintColor, fontSize: 10)),
+                                  numeric: false,
+                                  tooltip: 'Sunlight illuminance'
+                                ),
+                                DataColumn(
+                                  label: Text('Moisture\n(%)', style: TextStyle(color: Theme.of(context).hintColor, fontSize: 10)),
+                                  numeric: false,
+                                  tooltip: 'Moisture'
+                                ),
+                                DataColumn(
+                                  label: Text('Humidity\n(%)', style: TextStyle(color: Theme.of(context).hintColor, fontSize: 10)),
+                                  numeric: false,
+                                  tooltip: 'Humidity'
+                                ),
+                                DataColumn(
+                                  label: Text(globals.tempUseF ? 'Temp\n(°F)' : 'Temp\n(°C)', style: TextStyle(color: Theme.of(context).hintColor, fontSize: 10)),
+                                  numeric: false,
+                                  tooltip: 'Temperature'
+                                ),
+                              ],
+                              rows: <DataRow>[
+                                ...plant.readings.map(
+                                  (reading) => DataRow(
+                                    cells: [
+                                      DataCell(
+                                        Container(
+                                          width: 60,
+                                          child: Text(
+                                            globals.monthName[reading.time.month-1] + ' ' + reading.time.day.toString() + ', ' + reading.time.year.toString() +
+                                            '\n' + globals.timeDisplay(plant.readings.last.time),
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(color: Theme.of(context).hintColor, fontSize: 10),
+                                          )
+                                        )
+                                      ),
+                                      DataCell(
+                                        Container(
+                                          width: 50,
+                                          child: Text(
+                                            reading.light.toStringAsFixed(2),
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(color: Theme.of(context).hintColor, fontSize: 10),
+                                          )
+                                        )
+                                      ),
+                                      DataCell(
+                                        Container(
+                                          width: 30,
+                                          child: Text(
+                                            reading.moisture.toStringAsFixed(2),
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(color: Theme.of(context).hintColor, fontSize: 10),
+                                          )
+                                        )
+                                      ),
+                                      DataCell(
+                                        Container(
+                                          width: 30,
+                                          child: Text(
+                                            reading.humidity.toStringAsFixed(2),
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(color: Theme.of(context).hintColor, fontSize: 10),
+                                          )
+                                        )
+                                      ),
+                                      DataCell(
+                                        Container(
+                                          width: 30,
+                                          child: Text(
+                                            globals.tempUseF ? reading.temperature.toStringAsFixed(2) : ((reading.temperature - 32) * 5/9).toStringAsFixed(2),
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(color: Theme.of(context).hintColor, fontSize: 10),
+                                          )
+                                        )
+                                      ),
+                                    ]
+                                  )
+                                )
+                              ],
+                            )
+                          ),
+                        )
+                      );
+                    }
+                  }
                 )
               ).toList()
             )

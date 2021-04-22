@@ -1,87 +1,282 @@
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:gmd_project/model/plant_model.dart';
 import 'package:gmd_project/model/globals.dart' as globals;
 
-class Statspage extends StatelessWidget {
+List<charts.Series<PlantReading, DateTime>> getLight() {
+  final data = plantProbes[0].readings;
+  return [
+    charts.Series<PlantReading, DateTime>(
+      id: 'Readings',
+      colorFn: (_, __) => charts.MaterialPalette.green.shadeDefault,
+      domainFn: (PlantReading reading, _) => reading.time,
+      measureFn: (PlantReading reading, _) => reading.light,
+      data: data,
+    )
+  ];
+}
+
+List<charts.Series<PlantReading, DateTime>> getMoisture() {
+  final data = plantProbes[0].readings;
+  return [
+    charts.Series<PlantReading, DateTime>(
+      id: 'Readings',
+      colorFn: (_, __) => charts.MaterialPalette.green.shadeDefault,
+      domainFn: (PlantReading reading, _) => reading.time,
+      measureFn: (PlantReading reading, _) => reading.moisture,
+      data: data,
+    )
+  ];
+}
+
+List<charts.Series<PlantReading, DateTime>> getHumidity() {
+  final data = plantProbes[0].readings;
+  return [
+    charts.Series<PlantReading, DateTime>(
+      id: 'Readings',
+      colorFn: (_, __) => charts.MaterialPalette.green.shadeDefault,
+      domainFn: (PlantReading reading, _) => reading.time,
+      measureFn: (PlantReading reading, _) => reading.moisture,
+      data: data,
+    )
+  ];
+}
+
+List<charts.Series<PlantReading, DateTime>> getTemperature() {
+  final data = plantProbes[0].readings;
+  return [
+    charts.Series<PlantReading, DateTime>(
+      id: 'Readings',
+      colorFn: (_, __) => charts.MaterialPalette.green.shadeDefault,
+      domainFn: (PlantReading reading, _) => reading.time,
+      measureFn: (PlantReading reading, _) => globals.tempUseF ? reading.temperature : ((reading.temperature - 32) * 5/9),
+      data: data,
+    )
+  ];
+}
+
+class Statspage extends StatefulWidget {
+  @override
+  _StatspageState createState() => _StatspageState();
+}
+
+class _StatspageState extends State<Statspage> {
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(left: 55.0, right: 10, top: 10, bottom: 10),
-      child: Column(
+      child: (globals.email == '') ? Center(child: Text((plantProbes.length == 0 && globals.email != '') ? 'No plants have been registered' : 'Sign in to view your plants', style: TextStyle(color: Theme.of(context).hintColor)))
+      : Stack(
         children: <Widget> [
-          Container(padding: EdgeInsets.only(left: 45), child: Text('Light Measurements', style: TextStyle(color: Theme.of(context).hintColor))),
-          SizedBox(width: 300, height: 200, child: LineChart(
-            LineChartData(
-              minX: 0,
-              minY: 0,
-              maxX: 11,
-              maxY: 15000,
-              axisTitleData: FlAxisTitleData(
-                bottomTitle: AxisTitle(
-                  showTitle: true,
-                  textStyle: TextStyle(color: Theme.of(context).hintColor),
-                  margin: 0,
-                  titleText: 'Time',
-                ),
-                leftTitle: AxisTitle(
-                  showTitle: true,
-                  textStyle: TextStyle(color: Theme.of(context).hintColor),
-                  margin: 0,
-                  titleText: 'Lux',
-                )
-              ),
-              titlesData: FlTitlesData(
-                bottomTitles: SideTitles(
-                  showTitles: true,
-                  getTextStyles: (value) => TextStyle(
-                    color: Theme.of(context).hintColor,
-                    fontSize: 12,
-                  ),
-                  getTitles: (value) {
-                    return globals.monthName[value.toInt()];
-                  }
-                ),
-                leftTitles: SideTitles(
-                  showTitles: true,
-                  getTextStyles: (value) => TextStyle(
-                    color: Theme.of(context).hintColor,
-                    fontSize: 12,
-                  ),
-                )
-              ),
-              gridData: FlGridData(
-                show: true,
-                getDrawingHorizontalLine: (value) {
-                  return FlLine(
-                    color: Theme.of(context).buttonColor,
-                    strokeWidth: 0.75,
-                  );
-                },
-                drawVerticalLine: true,
-                getDrawingVerticalLine: (value) {
-                  return FlLine(
-                    color: Theme.of(context).buttonColor,
-                    strokeWidth: 0.75
-                  );
-                },
-              ),
-              borderData: FlBorderData(
-                show: true,
-                border: Border.all(color: Theme.of(context).buttonColor)
-              ),
-              lineBarsData: [
-                LineChartBarData(
-                  spots: [
-                    FlSpot(double.parse(plantProbes[0].readings[0].time.minute.toString()), plantProbes[0].readings[0].light),
-                    FlSpot(double.parse(plantProbes[0].readings[1].time.minute.toString()), plantProbes[0].readings[1].light),
+          ListView(
+            children: <Widget> [
+              Container(
+                height: 200,
+                child: charts.TimeSeriesChart(
+                  getLight(),
+                  animate: false,
+                  behaviors: [
+                    charts.ChartTitle(
+                      'Sunlight Illuminance',
+                      titleStyleSpec: charts.TextStyleSpec(color: globals.darkMode ? charts.Color.white : charts.Color.black, fontSize: 16),
+                      behaviorPosition: charts.BehaviorPosition.top,
+                      innerPadding: 18
+                    ),
+                    charts.ChartTitle(
+                      'Time',
+                      titleStyleSpec: charts.TextStyleSpec(color: globals.darkMode ? charts.Color.white : charts.Color.black, fontSize: 10),
+                      behaviorPosition: charts.BehaviorPosition.bottom,
+                      titleOutsideJustification:
+                      charts.OutsideJustification.middleDrawArea
+                    ),
+                    charts.ChartTitle(
+                      'Lux',
+                      titleStyleSpec: charts.TextStyleSpec(color: globals.darkMode ? charts.Color.white : charts.Color.black, fontSize: 10),
+                      behaviorPosition: charts.BehaviorPosition.start,
+                      titleOutsideJustification:
+                      charts.OutsideJustification.middleDrawArea
+                    ),
                   ],
-                  colors: [Theme.of(context).primaryColor],
+                  domainAxis: charts.DateTimeAxisSpec(
+                    renderSpec: charts.SmallTickRendererSpec(
+                      labelStyle: charts.TextStyleSpec(
+                        fontSize: 10, // size in Pts.
+                        color: globals.darkMode ? charts.Color.white : charts.Color.black
+                      )
+                    ),
+                    tickFormatterSpec: charts.AutoDateTimeTickFormatterSpec(
+                      hour: charts.TimeFormatterSpec(
+                        format: 'dd',
+                        transitionFormat: 'MMM dd',
+                      ),
+                    ),
+                  ),
+                  primaryMeasureAxis: charts.NumericAxisSpec(
+                    renderSpec: charts.SmallTickRendererSpec(
+                      labelStyle: charts.TextStyleSpec(
+                        fontSize: 10, // size in Pts.
+                        color: globals.darkMode ? charts.Color.white : charts.Color.black
+                      )
+                    ),
+                  ),
                 )
-              ]
-            )
+              ),
+              Container(
+                height: 200,
+                child: charts.TimeSeriesChart(
+                  getMoisture(),
+                  animate: false,
+                  behaviors: [
+                    charts.ChartTitle(
+                      'Moisture',
+                      titleStyleSpec: charts.TextStyleSpec(color: globals.darkMode ? charts.Color.white : charts.Color.black, fontSize: 16),
+                      behaviorPosition: charts.BehaviorPosition.top,
+                      innerPadding: 18
+                    ),
+                    charts.ChartTitle(
+                      'Time',
+                      titleStyleSpec: charts.TextStyleSpec(color: globals.darkMode ? charts.Color.white : charts.Color.black, fontSize: 10),
+                      behaviorPosition: charts.BehaviorPosition.bottom,
+                      titleOutsideJustification:
+                      charts.OutsideJustification.middleDrawArea
+                    ),
+                    charts.ChartTitle(
+                      'Moisture (%)',
+                      titleStyleSpec: charts.TextStyleSpec(color: globals.darkMode ? charts.Color.white : charts.Color.black, fontSize: 10),
+                      behaviorPosition: charts.BehaviorPosition.start,
+                      titleOutsideJustification:
+                      charts.OutsideJustification.middleDrawArea
+                    ),
+                  ],
+                  domainAxis: charts.DateTimeAxisSpec(
+                    renderSpec: charts.SmallTickRendererSpec(
+                      labelStyle: charts.TextStyleSpec(
+                        fontSize: 10, // size in Pts.
+                        color: globals.darkMode ? charts.Color.white : charts.Color.black
+                      )
+                    ),
+                    tickFormatterSpec: charts.AutoDateTimeTickFormatterSpec(
+                      hour: charts.TimeFormatterSpec(
+                        format: 'dd',
+                        transitionFormat: 'MMM dd',
+                      ),
+                    ),
+                  ),
+                  primaryMeasureAxis: charts.NumericAxisSpec(
+                    renderSpec: charts.SmallTickRendererSpec(
+                      labelStyle: charts.TextStyleSpec(
+                        fontSize: 10, // size in Pts.
+                        color: globals.darkMode ? charts.Color.white : charts.Color.black
+                      )
+                    ),
+                  ),
+                )
+              ),
+              Container(
+                height: 200,
+                child: charts.TimeSeriesChart(
+                  getHumidity(),
+                  animate: false,
+                  behaviors: [
+                    charts.ChartTitle(
+                      'Humidity',
+                      titleStyleSpec: charts.TextStyleSpec(color: globals.darkMode ? charts.Color.white : charts.Color.black, fontSize: 16),
+                      behaviorPosition: charts.BehaviorPosition.top,
+                      innerPadding: 18
+                    ),
+                    charts.ChartTitle(
+                      'Time',
+                      titleStyleSpec: charts.TextStyleSpec(color: globals.darkMode ? charts.Color.white : charts.Color.black, fontSize: 10),
+                      behaviorPosition: charts.BehaviorPosition.bottom,
+                      titleOutsideJustification:
+                      charts.OutsideJustification.middleDrawArea
+                    ),
+                    charts.ChartTitle(
+                      'Humidity (%)',
+                      titleStyleSpec: charts.TextStyleSpec(color: globals.darkMode ? charts.Color.white : charts.Color.black, fontSize: 10),
+                      behaviorPosition: charts.BehaviorPosition.start,
+                      titleOutsideJustification:
+                      charts.OutsideJustification.middleDrawArea
+                    ),
+                  ],
+                  domainAxis: charts.DateTimeAxisSpec(
+                    renderSpec: charts.SmallTickRendererSpec(
+                      labelStyle: charts.TextStyleSpec(
+                        fontSize: 10, // size in Pts.
+                        color: globals.darkMode ? charts.Color.white : charts.Color.black
+                      )
+                    ),
+                    tickFormatterSpec: charts.AutoDateTimeTickFormatterSpec(
+                      hour: charts.TimeFormatterSpec(
+                        format: 'dd',
+                        transitionFormat: 'MMM dd',
+                      ),
+                    ),
+                  ),
+                  primaryMeasureAxis: charts.NumericAxisSpec(
+                    renderSpec: charts.SmallTickRendererSpec(
+                      labelStyle: charts.TextStyleSpec(
+                        fontSize: 10, // size in Pts.
+                        color: globals.darkMode ? charts.Color.white : charts.Color.black
+                      )
+                    ),
+                  ),
+                )
+              ),
+              Container(
+                height: 200,
+                child: charts.TimeSeriesChart(
+                  getTemperature(),
+                  animate: false,
+                  behaviors: [
+                    charts.ChartTitle(
+                      'Temperature',
+                      titleStyleSpec: charts.TextStyleSpec(color: globals.darkMode ? charts.Color.white : charts.Color.black, fontSize: 16),
+                      behaviorPosition: charts.BehaviorPosition.top,
+                      innerPadding: 18
+                    ),
+                    charts.ChartTitle(
+                      'Time',
+                      titleStyleSpec: charts.TextStyleSpec(color: globals.darkMode ? charts.Color.white : charts.Color.black, fontSize: 10),
+                      behaviorPosition: charts.BehaviorPosition.bottom,
+                      titleOutsideJustification:
+                      charts.OutsideJustification.middleDrawArea
+                    ),
+                    charts.ChartTitle(
+                      globals.tempUseF ? 'Temperature (°F)' : 'Temperature (°C)',
+                      titleStyleSpec: charts.TextStyleSpec(color: globals.darkMode ? charts.Color.white : charts.Color.black, fontSize: 10),
+                      behaviorPosition: charts.BehaviorPosition.start,
+                      titleOutsideJustification:
+                      charts.OutsideJustification.middleDrawArea
+                    ),
+                  ],
+                  domainAxis: charts.DateTimeAxisSpec(
+                    renderSpec: charts.SmallTickRendererSpec(
+                      labelStyle: charts.TextStyleSpec(
+                        fontSize: 10, // size in Pts.
+                        color: globals.darkMode ? charts.Color.white : charts.Color.black
+                      )
+                    ),
+                    tickFormatterSpec: charts.AutoDateTimeTickFormatterSpec(
+                      hour: charts.TimeFormatterSpec(
+                        format: 'dd',
+                        transitionFormat: 'MMM dd',
+                      ),
+                    ),
+                  ),
+                  primaryMeasureAxis: charts.NumericAxisSpec(
+                    renderSpec: charts.SmallTickRendererSpec(
+                      labelStyle: charts.TextStyleSpec(
+                        fontSize: 10, // size in Pts.
+                        color: globals.darkMode ? charts.Color.white : charts.Color.black
+                      )
+                    ),
+                  ),
+                )
+              )
+            ]
           )
-        )]
+        ]
       )
     );
   }

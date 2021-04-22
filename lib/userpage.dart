@@ -88,7 +88,6 @@ class _UserpageState extends State<Userpage> {
                                     if(result.contains('[{')) plantProbes = (jsonDecode(result) as List).map((i) => PlantModel.fromJson(i)).toList();
                                     plantProbes.forEach((item){
                                       getPlantTraits(item.id).then((String result){
-                                        debugPrint(result);
                                         if(result.contains('[{')) item.readings = (jsonDecode(result) as List).map((i) => PlantReading.fromJson(i)).toList();
                                       });
                                     });

@@ -20,7 +20,7 @@ class _HomepageState extends State<Homepage> {
         });
       });
     });
-    await Future.delayed(Duration(milliseconds: 500));
+    await Future.delayed(Duration(milliseconds: 1000));
     setState(() => globals.loading.value = false);
   }
   @override
@@ -98,24 +98,6 @@ class _HomePlantViewState extends State<HomePlantView> {
                   width: 23,
                   height: 12,
                   child: Icon(Icons.star, color: Colors.yellow, size: 19.0)
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    border: Border.all(
-                    color: Theme.of(context).buttonColor,
-                    width: 1.0,
-                   )
-                  ),
-                  margin: EdgeInsets.only(right: 9.0, left: 120, top: 1.0),
-                  width: 12,
-                  height: 23,
-                  child: Column(
-                    children: <Widget> [
-                      Icon(Icons.battery_full, color: Colors.green, size: 10.0),
-                      Icon(Icons.wifi, color: Colors.green, size: 10.0)
-                    ]
-                  ),
                 ),
               ]
             ),
