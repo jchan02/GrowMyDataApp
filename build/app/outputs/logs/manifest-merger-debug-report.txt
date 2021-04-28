@@ -5,6 +5,8 @@ INJECTED from C:\Users\Jason\Downloads\Capstone\GrowMyDataApp\gmd_project\androi
 INJECTED from C:\Users\Jason\Downloads\Capstone\GrowMyDataApp\gmd_project\android\app\src\main\AndroidManifest.xml:1:1-48:12
 INJECTED from C:\Users\Jason\Downloads\Capstone\GrowMyDataApp\gmd_project\android\app\src\main\AndroidManifest.xml:1:1-48:12
 MERGED from C:\Users\Jason\Downloads\Capstone\GrowMyDataApp\gmd_project\android\app\src\main\AndroidManifest.xml:1:1-48:12
+MERGED from [:camera] C:\Users\Jason\Downloads\Capstone\GrowMyDataApp\gmd_project\build\camera\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-10:12
+MERGED from [:path_provider] C:\Users\Jason\Downloads\Capstone\GrowMyDataApp\gmd_project\build\path_provider\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.fragment:fragment:1.1.0] C:\Users\Jason\.gradle\caches\transforms-2\files-2.1\0986d0d74b8a2c7da8161f6370fc7744\fragment-1.1.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.activity:activity:1.0.0] C:\Users\Jason\.gradle\caches\transforms-2\files-2.1\615cab8ad6393a9c868d48761bbea666\activity-1.0.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.viewpager:viewpager:1.0.0] C:\Users\Jason\.gradle\caches\transforms-2\files-2.1\28d99d5113324aa067757f8ca41a426f\viewpager-1.0.0\AndroidManifest.xml:17:1-22:12
@@ -101,6 +103,10 @@ uses-sdk
 INJECTED from C:\Users\Jason\Downloads\Capstone\GrowMyDataApp\gmd_project\android\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Users\Jason\Downloads\Capstone\GrowMyDataApp\gmd_project\android\app\src\main\AndroidManifest.xml
 INJECTED from C:\Users\Jason\Downloads\Capstone\GrowMyDataApp\gmd_project\android\app\src\main\AndroidManifest.xml
+MERGED from [:camera] C:\Users\Jason\Downloads\Capstone\GrowMyDataApp\gmd_project\build\camera\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
+MERGED from [:camera] C:\Users\Jason\Downloads\Capstone\GrowMyDataApp\gmd_project\build\camera\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
+MERGED from [:path_provider] C:\Users\Jason\Downloads\Capstone\GrowMyDataApp\gmd_project\build\path_provider\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
+MERGED from [:path_provider] C:\Users\Jason\Downloads\Capstone\GrowMyDataApp\gmd_project\build\path_provider\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [androidx.fragment:fragment:1.1.0] C:\Users\Jason\.gradle\caches\transforms-2\files-2.1\0986d0d74b8a2c7da8161f6370fc7744\fragment-1.1.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.fragment:fragment:1.1.0] C:\Users\Jason\.gradle\caches\transforms-2\files-2.1\0986d0d74b8a2c7da8161f6370fc7744\fragment-1.1.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.activity:activity:1.0.0] C:\Users\Jason\.gradle\caches\transforms-2\files-2.1\615cab8ad6393a9c868d48761bbea666\activity-1.0.0\AndroidManifest.xml:20:5-22:41
@@ -135,3 +141,11 @@ INJECTED from C:\Users\Jason\Downloads\Capstone\GrowMyDataApp\gmd_project\androi
 	android:minSdkVersion
 		INJECTED from C:\Users\Jason\Downloads\Capstone\GrowMyDataApp\gmd_project\android\app\src\main\AndroidManifest.xml
 		INJECTED from C:\Users\Jason\Downloads\Capstone\GrowMyDataApp\gmd_project\android\app\src\debug\AndroidManifest.xml
+uses-permission#android.permission.CAMERA
+ADDED from [:camera] C:\Users\Jason\Downloads\Capstone\GrowMyDataApp\gmd_project\build\camera\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-65
+	android:name
+		ADDED from [:camera] C:\Users\Jason\Downloads\Capstone\GrowMyDataApp\gmd_project\build\camera\intermediates\library_manifest\debug\AndroidManifest.xml:7:22-62
+uses-permission#android.permission.RECORD_AUDIO
+ADDED from [:camera] C:\Users\Jason\Downloads\Capstone\GrowMyDataApp\gmd_project\build\camera\intermediates\library_manifest\debug\AndroidManifest.xml:8:5-71
+	android:name
+		ADDED from [:camera] C:\Users\Jason\Downloads\Capstone\GrowMyDataApp\gmd_project\build\camera\intermediates\library_manifest\debug\AndroidManifest.xml:8:22-68

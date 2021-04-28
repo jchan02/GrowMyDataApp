@@ -7,9 +7,14 @@ import 'package:gmd_project/plantpage.dart';
 import 'package:gmd_project/statspage.dart';
 import 'package:gmd_project/tipspage.dart';
 import 'package:gmd_project/settingspage.dart';
+import 'package:camera/camera.dart';
 
 GlobalKey<NavigatorState> navKey = GlobalKey();
-void main() => runApp(GMDApp());
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  globals.cameras = await availableCameras();
+  runApp(GMDApp());
+}
 
 class GMDApp extends StatefulWidget {
   @override
@@ -45,7 +50,7 @@ class _GMDAppState extends State<GMDApp> {
         hintColor: Colors.white,
         secondaryHeaderColor: Colors.black
       ),
-      themeMode: globals.themeNotif.currentTheme()
+      themeMode: globals.themeNotif.currentTheme(),
     );
   }
 }

@@ -2,6 +2,7 @@ class PlantModel {
   int id;
   String name;
   bool favorite;
+  String imgpath;
   List<PlantReading> readings;
 
   PlantModel({this.id, this.name, this.favorite, this.readings});
@@ -9,6 +10,7 @@ class PlantModel {
     id = int.parse(json['plantId']);
     name = json['plantName'];
     favorite = false;
+    imgpath = '';
     readings = [];
   }
 }
@@ -29,7 +31,7 @@ class PlantReading {
   this.humidity, this.humidityQuality, this.temperature, this.temperatureQuality});
   PlantReading.fromJson(Map<String, dynamic> json)  {
     id = int.parse(json['readingId']);
-    time = DateTime.parse(json['theTime']);
+    time = DateTime.parse(json['theTime'] + 'Z').toLocal();
     light = double.parse(json['sunlight']);
     moisture = double.parse(json['moisture']);
     humidity = double.parse(json['humidity']);
@@ -42,28 +44,3 @@ class PlantReading {
 }
 
 List<PlantModel> plantProbes = [];
-
-List<PlantModel> testProbes = [
-  PlantModel(
-    id: 1,
-    name: "Test Plant 1",
-    favorite: true,
-    readings: [
-    PlantReading(
-      time: DateTime.parse("2021-03-20 18:07:06"), light: 20.0, lightQuality: 0.3, moisture: 16.7, moistureQuality: 0.2,
-      humidity: 56.3, humidityQuality: 0.8, temperature: 75, temperatureQuality: 0.97
-      )
-    ]
-  ),
-  PlantModel(
-    id: 26,
-    name: "New Plant",
-    favorite: false,
-    readings: [
-      PlantReading(
-        time: DateTime.parse("2021-03-21 09:45:37"), light: 35.0, lightQuality: 0.48, moisture: 78.2, moistureQuality: 0.623,
-        humidity: 11.111111, humidityQuality: 0.143, temperature: 55, temperatureQuality: 0.79
-      )
-    ]
-  ),
-];

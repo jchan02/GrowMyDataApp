@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:gmd_project/model/globals.dart' as globals;
+import 'dart:math';
 
 class Tipspage extends StatefulWidget {
   @override
@@ -8,15 +8,6 @@ class Tipspage extends StatefulWidget {
 }
 
 class _TipspageState extends State<Tipspage> {
-  String test = '';
-  String test2 = '';
-  String test3 = '';
-  String test4 = '';
-  String test5 = '';
-  String test6 = '';
-  String test7 = '';
-  final getKey = GlobalKey<FormState>();
-  final getKey2 = GlobalKey<FormState>();
   @override
   void initState() {
     super.initState();
@@ -26,134 +17,18 @@ class _TipspageState extends State<Tipspage> {
       padding: EdgeInsets.only(left: 55.0),
       child: ListView(
         children: <Widget>[
-          Form(
-            key: getKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                TextFormField(
-                  style: TextStyle(color: Theme.of(context).hintColor),
-                  decoration: const InputDecoration(
-                    hintText: 'Enter your email',
-                  ),
-                  onSaved: (input) => {
-                    getInfo(input).then((String result){setState((){test = result;});})
-                  },
-                  validator: (value) {
-                   if (value.isEmpty) {
-                      return 'Please enter a valid email';
-                    }
-                    return null;
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).primaryColor)
-                    ),
-                    onPressed: () {
-                      if (getKey.currentState.validate()) {
-                        getKey.currentState.save();
-                      }
-                    },
-                    child: Text('Get User'),
-                  ),
-                ),
-              ]
-            )   
-          ),
-          Text(test, style: TextStyle(color: Theme.of(context).hintColor)),
-          ElevatedButton(
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).primaryColor)
-            ),
-            onPressed: () {
-              getInfo('email@email.com').then((String result){setState((){test2 = result;});});
-            },
-            child: Text('Get User 2'),
-          ),
-          Text(test2, style: TextStyle(color: Theme.of(context).hintColor)),
-          ElevatedButton(
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).primaryColor)
-            ),
-            onPressed: () {
-              setState(() => globals.loading.value = true);
-              getInfo('email@email.com').then((var result){setState((){test3 = result.toString(); setState(() => globals.loading.value = false);});});
-            },
-            child: Text('Get User 3'),
-          ),
-          Text(test3, style: TextStyle(color: Theme.of(context).hintColor)),
-          Form(
-            key: getKey2,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                TextFormField(
-                  style: TextStyle(color: Theme.of(context).hintColor),
-                  decoration: const InputDecoration(
-                    hintText: 'Enter your email',
-                  ),
-                  onSaved: (input) => {
-                    setState(() => globals.loading.value = true),
-                    getInfo(input).then((String result){setState((){test6 = result; setState(() => globals.loading.value = false);});})
-                  },
-                  validator: (value) {
-                   if (value.isEmpty) {
-                      return 'Please enter a valid email';
-                    }
-                    return null;
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).primaryColor)
-                    ),
-                    onPressed: () {
-                      if (getKey2.currentState.validate()) {
-                        getKey2.currentState.save();
-                      }
-                    },
-                    child: Text('Get User 4'),
-                  ),
-                ),
-              ]
-            )   
-          ),
-          Text(test6, style: TextStyle(color: Theme.of(context).hintColor)),
-          ElevatedButton(
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).primaryColor)
-            ),
-            onPressed: () {
-              getUserPlants().then((var result){setState((){test4 = result.toString();});});
-            },
-            child: Text('Get Plants'),
-          ),
-          Text(test4, style: TextStyle(color: Theme.of(context).hintColor)),
-          ElevatedButton(
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).primaryColor)
-            ),
-            onPressed: () {
-              getPlantTraits().then((var result){setState((){test5 = result.toString();});});
-            },
-            child: Text('Get Plant Readings'),
-          ),
-          Text(test5, style: TextStyle(color: Theme.of(context).hintColor)),
-                    ElevatedButton(
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).primaryColor)
-            ),
-            onPressed: () {
-              addPlantTraits().then((var result){setState((){test7 = result.toString();});});
-            },
-            child: Text('Add Plant Traits'),
-          ),
-          Text(test7, style: TextStyle(color: Theme.of(context).hintColor)),
+          Text('\u2022 Do not water on a schedule; water when your plants need it! It is much easier to overwater than underwater a plant.\n', style: TextStyle(color: Theme.of(context).hintColor, fontSize: 16)),
+          Text('\u2022 When watering, add water to the soil rather than the leaves or the stem - plants get their water from the roots.\n', style: TextStyle(color: Theme.of(context).hintColor, fontSize: 16)),
+          Text('\u2022 Increased sunlight triggers faster growth, and therefore requires more water. Of course, having not enough light may prevent any growth at all.\n', style: TextStyle(color: Theme.of(context).hintColor, fontSize: 16)),
+          Text('\u2022 Make sure to use soil appropriate for your plant: a plant that likes water would want soil that retains it!\n', style: TextStyle(color: Theme.of(context).hintColor, fontSize: 16)),
+          Text('\u2022 As potted plants grow, you may need to move them to a larger pot to accommodate their larger root structures.\n', style: TextStyle(color: Theme.of(context).hintColor, fontSize: 16)),
+          Text('\u2022 Repotting by pulling the plant out of the pot can damage it. Instead, turn the pot over your hand and let the plant fall out gently.\n', style: TextStyle(color: Theme.of(context).hintColor, fontSize: 16)),
+          Text('\u2022 If you own a pet, make sure to check if a plant is toxic to them before buying it.\n', style: TextStyle(color: Theme.of(context).hintColor, fontSize: 16)),
+          Text('\u2022 It is easier and cheaper to buy plants that can thrive in your environment, instead of adjusting your environment to fit the plants.\n', style: TextStyle(color: Theme.of(context).hintColor, fontSize: 16)),
+          Text('\u2022 Long-term gardeners should occasionally change the type of vegetable they grow in a certain area or planter so as to not exhaust all of a certain type of nutrient.\n', style: TextStyle(color: Theme.of(context).hintColor, fontSize: 16)),
+          Text('\u2022 Dying parts of a plant should be removed so that the plant does not dedicate some of its nutrients to it.\n', style: TextStyle(color: Theme.of(context).hintColor, fontSize: 16)),
+          Text('\u2022 Plants prefer stable conditions. A fluctuating environment can shock the plant and impair its growth, so keep them away from radiators and air conditioners.\n', style: TextStyle(color: Theme.of(context).hintColor, fontSize: 16)),
+          Text('\u2022 Indoor plants may accumulate dust that inhibits their ability to receive light.\n', style: TextStyle(color: Theme.of(context).hintColor, fontSize: 16)),
         ]
       )
     );
@@ -173,6 +48,16 @@ Future<String> addPlantTraits() async{
   String theUrl = "https://71142021.000webhostapp.com/setPlantTraits.php";
   var res = await http.post(Uri.encodeFull(theUrl), headers: {"Accept":"application/json"},
     body: {'plantId': '30' , 'temperature': '65' , 'moisture' : '80' , 'humidity' : '40' , 'sunlight' : '20000'});
+  var respBody = res.body;
+  return respBody;
+}
+
+Future<String> add4PlantTraits() async{
+  var rng = new Random();
+  String theUrl = "https://71142021.000webhostapp.com/uploadReadings.php";
+  var res = await http.post(Uri.encodeFull(theUrl), headers: {"Accept":"application/json"},
+    body: {'plantId1':'30','plantId2':'31','plantId3':'33','plantId4':'34','temperature':(73 + 0.5* rng.nextDouble()).toString(),
+      'moisture1':'0','moisture2':(33 + 0.2 * rng.nextDouble()).toString(),'moisture3':(4.8 + 0.01 * rng.nextDouble()).toString(),'moisture4':'100','humidity':(41 + rng.nextInt(3)).toString(),'sunlight':(2200 + 500 * rng.nextDouble()).toString()});
   var respBody = res.body;
   return respBody;
 }
@@ -212,7 +97,7 @@ Future<String> addPlant() async{
 
 Future sendMail(String email) async{
   var url = 'https://71142021.000webhostapp.com/mailUser.php';
-  String queryString = Uri(queryParameters: {'email':'jchan02@manhattan.edu'}).query;
+  String queryString = Uri(queryParameters: {'email':'vgonnella01@manhattan.edu'}).query;
   var requestUrl = url + '?' + queryString;
   await http.get(requestUrl);
 }

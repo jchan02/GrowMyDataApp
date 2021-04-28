@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:camera/camera.dart';
 
+List<CameraDescription> cameras;
 String email = '';
 bool tempUseF = true;
 int readRate = 10;

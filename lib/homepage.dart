@@ -85,19 +85,7 @@ class _HomePlantViewState extends State<HomePlantView> {
                   margin: EdgeInsets.only(right: 8.0, left: 8.0),
                   width: 125,
                   height: 100,
-                  child: Center(child: Icon(Icons.image_not_supported, color: Theme.of(context).cardColor, size: 90.0)),
-                ),
-                Container(
-                  margin: EdgeInsets.only(right: 9.0, left: 9.0, top: 1.0),
-                  width: 23,
-                  height: 12,
-                  child: Icon(Icons.star, color: Theme.of(context).buttonColor, size: 25.0)
-                ),
-                if(widget.favorite == true) Container(
-                  margin: EdgeInsets.only(right: 9.0, left: 10.0, top: 4.0),
-                  width: 23,
-                  height: 12,
-                  child: Icon(Icons.star, color: Colors.yellow, size: 19.0)
+                  child: Center(child: (widget.index == 0) ? Image(image: AssetImage('assets/plantimgtest.jpg')) : (widget.index == 1) ? Image(image: AssetImage('assets/plantimgtest2.jpg')) : Icon(Icons.image_not_supported, color: Theme.of(context).cardColor, size: 90.0)),
                 ),
               ]
             ),
@@ -116,7 +104,12 @@ class _HomePlantViewState extends State<HomePlantView> {
               ),
               child: Row(
                 children: <Widget> [
-                  Icon(Icons.photo_camera, color: Theme.of(context).buttonColor),
+                  InkWell(
+                    child: Icon(Icons.photo_camera, color: Theme.of(context).buttonColor),
+                    onTap: () {
+
+                    }
+                  ),
                   Expanded(child: Text(
                     widget.name,
                     style: TextStyle(fontSize:11, color: Theme.of(context).hintColor),
@@ -226,9 +219,12 @@ class _HomePlantViewState extends State<HomePlantView> {
                     ),
                     child: Row(
                       children: <Widget> [
-                        Icon(
-                          Icons.wb_sunny_outlined,
-                          color: (widget.readings.length > 0) ? Colors.black : Theme.of(context).hintColor
+                        Tooltip(
+                          message: (widget.readings.last.light < 12000) ? 'Needs more light' : 'Has too much light',
+                          child: Icon(
+                            Icons.wb_sunny_outlined,
+                            color: (widget.readings.length > 0) ? Colors.black : Theme.of(context).hintColor
+                          )
                         ),
                         Expanded(
                           child: Align(
@@ -258,9 +254,12 @@ class _HomePlantViewState extends State<HomePlantView> {
                     ),
                     child: Row(
                       children: <Widget> [
-                        Icon(
-                          Icons.opacity,
-                          color: (widget.readings.length > 0) ? Colors.black : Theme.of(context).hintColor
+                        Tooltip(
+                          message: (widget.readings.last.moisture < 40) ? 'Needs more water' : 'Has too much water',
+                          child: Icon(
+                            Icons.opacity,
+                            color: (widget.readings.length > 0) ? Colors.black : Theme.of(context).hintColor
+                          )
                         ),
                         Expanded(
                           child: Align(
@@ -290,9 +289,12 @@ class _HomePlantViewState extends State<HomePlantView> {
                     ),
                     child: Row(
                       children: <Widget> [
-                        Icon(
-                          Icons.wb_cloudy_outlined,
-                          color: (widget.readings.length > 0) ? Colors.black : Theme.of(context).hintColor
+                        Tooltip(
+                          message: (widget.readings.last.humidity < 55) ? 'Air is too dry' : 'Air is too humid',
+                          child: Icon(
+                            Icons.wb_cloudy_outlined,
+                            color: (widget.readings.length > 0) ? Colors.black : Theme.of(context).hintColor
+                          )
                         ),
                         Expanded(
                           child: Align(
@@ -316,9 +318,12 @@ class _HomePlantViewState extends State<HomePlantView> {
                     ),
                     child: Row(
                       children: <Widget> [
-                        Icon(
-                          Icons.thermostat_rounded,
-                          color: (widget.readings.length > 0) ? Colors.black : Theme.of(context).hintColor
+                        Tooltip(
+                          message: (widget.readings.last.temperature < 75) ? 'Too cold' : 'Too hot',
+                          child: Icon(
+                            Icons.thermostat_rounded,
+                            color: (widget.readings.length > 0) ? Colors.black : Theme.of(context).hintColor
+                          )
                         ),
                         Expanded(
                           child: Align(
